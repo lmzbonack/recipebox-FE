@@ -1,18 +1,18 @@
-import React from 'react';
+import React from "react"
+import ExportRouter from "./Components/Router"
+import LocalNav from "./Components/Navbar"
 
-// import CardList from './Components/CardList'
-import Recipes from './Components/Recipes'
-import './App.css';
+import "bootstrap/dist/css/bootstrap.min.css"
+import "shards-ui/dist/css/shards.min.css"
+import './App.css'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        {/* <CardList /> */}
-        <Recipes/>
-      </header>
+    <div>
+      <LocalNav/>
+      <ExportRouter/>
     </div>
-  );
+  )
 }
 
 export default App;
