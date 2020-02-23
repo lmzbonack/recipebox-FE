@@ -1,7 +1,9 @@
 import React from 'react';
 import axios from 'axios'
 import { navigate } from "@reach/router"
+import { Container } from 'shards-react'
 
+import utils from '../store/services/utils'
 import RecipeCard from '../Components/RecipeCard'
 
 class Recipes extends React.Component {
@@ -12,29 +14,9 @@ class Recipes extends React.Component {
     }
   }
 
-  retrieveAuthToken() {
-    const itemStr = localStorage.getItem('authToken')
-    // if the item doesn't exist, return null
-    if (!itemStr) {
-      return null
-    }
-
-    const item = JSON.parse(itemStr)
-    const now = new Date()
-
-    // compare the expiry time of the item with the current time
-    if (now.getTime() > item.expiry) {
-      // If the item is expired, delete the item from storage
-      // and return null
-      localStorage.removeItem('authToken')
-      return null
-    }
-    return item.token
-  }
-
   async componentDidMount() {
-    let token = await this.retrieveAuthToken()
-    
+    let token = await utils.retrieveAuthToken()
+
     if (token === null){
       navigate('/login')
     } else {
@@ -54,17 +36,17 @@ class Recipes extends React.Component {
 
   render() {
     return (
-      <div>
+      <Container>
         <h2>Recipes</h2>
-          { this.state.recipes.map( (value, index) => {
-              return <RecipeCard key={value._id.$oid}
-                                 name={value.name}
-                                 author={value.author}
-                                 ingredients={value.ingredients}
-                                 instructions={value.instructions}
-               /> 
+          { this.state.recipes.map( value => {
+            return <RecipeCard key={value._id.$oid}
+                               name={value.name}
+                               author={value.author}
+                               ingredients={value.ingredients}
+                               instructions={value.instructions}
+               />
             })}
-      </div>
+      </Container>
     )
   }
 }

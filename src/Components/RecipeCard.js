@@ -1,6 +1,6 @@
 import React from 'react';
 
-function RecipeCard(props){
+export default function RecipeCard(props) {
   return (
     <div className="card">
       <p>{ props.name }</p>
@@ -11,5 +11,3 @@ function RecipeCard(props){
     </div>
   )
 }
-
-export default RecipeCard
