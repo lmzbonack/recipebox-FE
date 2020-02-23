@@ -1,13 +1,14 @@
 import React from 'react'
-import axios from 'axios'
 import { navigate } from "@reach/router"
 
+import UserService from '../store/services/UserService'
+
 import {
-  Button,  
-  Container, 
-  Form, 
-  FormInput, 
-  FormGroup, 
+  Button,
+  Container,
+  Form,
+  FormInput,
+  FormGroup,
 } from 'shards-react'
 
 export default class SignUp extends React.Component {
@@ -50,10 +51,9 @@ export default class SignUp extends React.Component {
       password: this.state.password
     }
     try {
-      let signUpResponse = await axios.post(`${process.env.REACT_APP_API_URL}/auth/signup`, payload)
+      let signUpResponse = await UserService.signUp(payload)
       if (signUpResponse.status === 201) {
-        // Log them in to save them time
-        let automaticSignIn = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, payload)
+        let automaticSignIn = await UserService.login(payload)
         if (signUpResponse.status === 201) {
           console.log(automaticSignIn.status)
           navigate('/recipes')
@@ -69,7 +69,7 @@ export default class SignUp extends React.Component {
     }
   }
 
-  render() { 
+  render() {
     return(
       <Container>
         <Form>

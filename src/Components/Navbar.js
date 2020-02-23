@@ -90,9 +90,9 @@ export default class NavExample extends React.Component {
                 Profile
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem href='/recipes'>Shopping List</DropdownItem>
+                <DropdownItem href='/shopping-list'>Shopping List</DropdownItem>
                 <DropdownItem href='#'>Created Recipes</DropdownItem>
-                <DropdownItem href='#'>Starred Recipes</DropdownItem>
+                <DropdownItem href='/starred-recipes'>Starred Recipes</DropdownItem>
                 <DropdownItem href='#'>Your Scraping Manifests</DropdownItem>
               </DropdownMenu>
             </Dropdown>

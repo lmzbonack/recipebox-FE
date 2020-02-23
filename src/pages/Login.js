@@ -1,13 +1,14 @@
 import React from 'react'
-import axios from 'axios'
 import { navigate } from "@reach/router"
 
+import UserService from '../store/services/UserService'
+
 import {
-  Button,  
-  Container, 
-  Form, 
-  FormInput, 
-  FormGroup, 
+  Button,
+  Container,
+  Form,
+  FormInput,
+  FormGroup,
 } from 'shards-react'
 
 export default class Login extends React.Component {
@@ -51,7 +52,7 @@ export default class Login extends React.Component {
       password: this.state.password
     }
     try {
-      let loginResponse = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, payload)
+      let loginResponse = await UserService.login(payload)
       if (loginResponse.status === 201) {
         const localStoragePayload = {
           token: loginResponse.data.token,
@@ -70,7 +71,7 @@ export default class Login extends React.Component {
     }
   }
 
-  render() { 
+  render() {
     return(
       <Container>
         <Form>
