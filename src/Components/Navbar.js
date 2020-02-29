@@ -65,7 +65,7 @@ export default class NavExample extends React.Component {
   render() {
     return (
       <Navbar theme="light" expand="md">
-        <NavbarBrand href="#">Recipe Box</NavbarBrand>
+        <NavbarBrand href="/recipes">Recipe Box</NavbarBrand>
         <NavbarToggler onClick={this.toggleNavbar} />
         <Collapse open={this.state.collapseOpen} navbar>
           <Nav navbar>
@@ -91,9 +91,9 @@ export default class NavExample extends React.Component {
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem href='/shopping-list'>Shopping List</DropdownItem>
-                <DropdownItem href='#'>Created Recipes</DropdownItem>
+                <DropdownItem href='/created-recipes'>Created Recipes</DropdownItem>
                 <DropdownItem href='/starred-recipes'>Starred Recipes</DropdownItem>
-                <DropdownItem href='#'>Your Scraping Manifests</DropdownItem>
+                <DropdownItem href='/created-manifests'>Scraping Manifests</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </Nav>

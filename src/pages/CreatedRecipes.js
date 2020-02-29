@@ -5,37 +5,37 @@ import { Container } from 'shards-react'
 
 import RecipeCard from '../Components/RecipeCard'
 
-export default class StarredRecipes extends React.Component {
+export default class CreatedRecipes extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      starredRecipes: [],
+      createdRecipes: [],
       error: ''
     }
   }
 
   async componentDidMount() {
     try {
-      let starredRecipesResponse = await UserService.fetchUserData('starred-recipes')
-      if (starredRecipesResponse.status === 200) {
+      let createdRecipesResponse = await UserService.fetchUserData('created-recipes')
+      if (createdRecipesResponse.status === 200) {
         this.setState({
-          starredRecipes: starredRecipesResponse.data,
+          createdRecipes: createdRecipesResponse.data,
           error: ''
         })
       }
     } catch (error) {
-      console.error(error)
-      this.setState({
-        error: error.response.data.message
-      })
+        console.error(error)
+        this.setState({
+          error: error.response.data.message
+        })
+      }
     }
-  }
 
   render() {
     return(
       <Container>
-        <h2>Starred Recipes</h2>
-        { this.state.starredRecipes.map( value => {
+        <h2>Created Recipes</h2>
+        { this.state.createdRecipes.map( value => {
               return <RecipeCard key={value._id.$oid}
                                  name={value.name}
                                  author={value.author}
