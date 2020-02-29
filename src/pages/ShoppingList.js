@@ -3,7 +3,7 @@ import React from 'react'
 import UserService from '../store/services/UserService'
 import { Container } from 'shards-react'
 
-import ShoppingListEntry from '../Components/ShoppingListEntry'
+import SingleShoppingList from '../Components/SingleShoppingList'
 
 export default class ShoppingList extends React.Component {
   constructor(props) {
@@ -22,7 +22,6 @@ export default class ShoppingList extends React.Component {
           shoppingList: shoppingListResponse.data,
           error: ''
         })
-        console.log(this.state.shoppingList)
       }
     } catch (error) {
       console.error(error)
@@ -34,13 +33,12 @@ export default class ShoppingList extends React.Component {
 
   render() {
     return(
-      <Container>
-        <h2>Shopping List</h2>
+      <Container className="mt-3">
         { this.state.shoppingList.map( value => {
           return (
-            <ShoppingListEntry key={value._id.$oid}
-                               name={value.name}
-                               ingredients={value.ingredients}/>
+            <SingleShoppingList key={value._id.$oid}
+                                name={value.name}
+                                ingredients={value.ingredients}/>
           )
           })}
       </Container>

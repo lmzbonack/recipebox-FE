@@ -22,23 +22,7 @@ export default {
     return axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, payload)
   },
   /**
-   * Retrieves starred recipes for a logged in user
-   */
-  async fetchStarredRecipes() {
-    let token = await utils.retrieveAuthToken()
-    if (token) {
-      const config = {
-        headers: { Authorization: `Bearer ${token}` }
-      };
-      return axios.get(`${process.env.REACT_APP_API_URL}/user/starred-recipes`, config)
-    } else {
-      navigate('/login')
-      return 'No Token'
-    }
-  },
-
-  /**
-   * Retrieves starred recipes for a logged in user
+   * Retrieves specific piece of user data for a logged in user
    */
   async fetchUserData(dataPiece) {
     let token = await utils.retrieveAuthToken()

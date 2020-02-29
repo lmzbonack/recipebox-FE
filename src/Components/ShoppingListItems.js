@@ -1,13 +1,15 @@
-// Component to render list of items in a single cart
 import React from 'react'
 
-import ShoppingListItems from '../Components/ShoppingListItems'
+import { ListGroup, ListGroupItem } from "shards-react";
 
 export default function ShoppingListItems(props) {
   return (
-    <div>
-      <h4>{ props.name }</h4>
-      <ShoppingListEntry />
-    </div>
+    <ListGroup>
+      { props.ingredients.map( (ingredient, index) => (
+        <ListGroupItem className="mt-1 mb-1" key={index}>
+          { ingredient }
+        </ListGroupItem>
+      ))}
+    </ListGroup>
   )
 }
