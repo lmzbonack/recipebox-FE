@@ -1,6 +1,7 @@
 import React from 'react'
 
 import UserService from '../store/services/UserService'
+// import ShoppingListService from '../store/services/ShoppingListService'
 import { Container } from 'shards-react'
 
 import SingleShoppingList from '../Components/SingleShoppingList'
@@ -9,36 +10,53 @@ export default class ShoppingList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      shoppingList: [],
+      shoppingLists: [],
       error: ''
     }
+    this.handleIngredientChangeTop = this.handleIngredientChangeTop.bind(this)
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+     this.retrieveShoppingLists()
+  }
+
+  handleIngredientChangeTop(payload) {
+    // For now this is fine eventually we will want to just fetch and pass into state the one list that changes
+    // const updatedList= await ShoppingListService.fetchOne(payload.id)
+    console.log(this.state)
+    this.retrieveShoppingLists()
+  }
+
+  async retrieveShoppingLists() {
     try {
       let shoppingListResponse = await UserService.fetchUserData('shopping-list')
-      if (shoppingListResponse.status === 200){
+      if (shoppingListResponse.status === 200) {
         this.setState({
-          shoppingList: shoppingListResponse.data,
+          shoppingLists: shoppingListResponse.data,
           error: ''
         })
       }
     } catch (error) {
-      console.error(error)
-      this.setState({
-        error: error.response.data.message
-      })
+      if (error.response) {
+        this.setState({
+          error: error.response.data.message
+        })
+      } else {
+        console.error(error)
+      }
     }
   }
 
   render() {
     return(
       <Container className="mt-3">
-        { this.state.shoppingList.map( value => {
+        { this.state.shoppingLists.map( value => {
           return (
             <SingleShoppingList key={value._id.$oid}
+                                id={value._id.$oid}
                                 name={value.name}
-                                ingredients={value.ingredients}/>
+                                ingredients={value.ingredients}
+                                onIngredientChangeTop={this.handleIngredientChangeTop}/>
           )
           })}
       </Container>

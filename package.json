@@ -22,12 +22,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "airbnb",
-      "plugin:react/recommended"
-  ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",

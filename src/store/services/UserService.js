@@ -23,13 +23,15 @@ export default {
   },
   /**
    * Retrieves specific piece of user data for a logged in user
+   * @param {string} dataPiece the route name for the piece of data
+   * being retrieved EG. 'shopping-list' 'starred-recipes'
    */
   async fetchUserData(dataPiece) {
     let token = await utils.retrieveAuthToken()
     if (token) {
       const config = {
         headers: { Authorization: `Bearer ${token}` }
-      };
+      }
       return axios.get(`${process.env.REACT_APP_API_URL}/user/${dataPiece}`, config)
     } else {
       navigate('/login')
