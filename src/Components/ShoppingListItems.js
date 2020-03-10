@@ -1,9 +1,11 @@
 import React from 'react'
 
 import { ListGroup, ListGroupItem, Container } from "shards-react";
-import { faTimes, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { Button, ButtonGroup, Modal, ModalBody, ModalHeader, Form, FormInput, FormGroup  } from 'shards-react'
+
+import ConfirmDelete from './ConfirmDelete'
 
 export default class ShoppingListItems extends React.Component {
   constructor(props) {
@@ -11,13 +13,14 @@ export default class ShoppingListItems extends React.Component {
     this.state = {
       open: false,
       activeIndex: '',
-      activeValue: ''
+      activeValue: '',
     };
     this.toggleModal = this.toggleModal.bind(this)
     this.openModal = this.openModal.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this)
+    this.loadDeleteIndex = this.loadDeleteIndex.bind(this)
   }
 
   componentDidMount() {
@@ -49,8 +52,16 @@ export default class ShoppingListItems extends React.Component {
     });
   }
 
-  handleDelete(index) {
+  loadDeleteIndex(index) {
+    this.setState({
+      activeIndex: index
+    })
+  }
+
+  handleDelete() {
+    const index = this.state.activeIndex
     this.props.onIngredientDelete(index)
+    this.closeConfirmModal()
   }
 
   handleUpdate() {
@@ -62,7 +73,7 @@ export default class ShoppingListItems extends React.Component {
   }
 
   render() {
-    const { open } = this.state;
+    const { open } = this.state
     return (
       <Container>
         <ListGroup>
@@ -73,34 +84,36 @@ export default class ShoppingListItems extends React.Component {
                 <Button theme='secondary' onClick={ () => { this.openModal(index, ingredient) } }>
                   <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
                 </Button>
-                <Button theme='danger' className='ml-1' onClick={ () => { this.handleDelete(index) } }>
+                <Button theme='danger' className='ml-1' onClick={ () => { this.openConfirmModal(); this.loadDeleteIndex(index); } }>
                   <FontAwesomeIcon className='ml-1' icon={faTimes} />
                 </Button>
               </ButtonGroup>
             </ListGroupItem>
           ))}
         </ListGroup>
+        <ConfirmDelete title='Delete Ingredient?'
+                       closeModal={close => this.closeConfirmModal = close}
+                       openModal={open => this.openConfirmModal = open}
+                       onDeleteConfirmation={this.handleDelete}/>
 
         <Modal open={open} toggle={this.toggleModal}>
             <ModalHeader>Edit Ingredient</ModalHeader>
           <ModalBody>
-            <p>{this.state.activeIndex}</p>
-            <p>{this.state.activeValue}</p>
             <Form>
               <FormGroup>
                 <label htmlFor="#activeValue">Ingredient</label>
                 <FormInput name="activeValue"  value={this.state.activeValue} onChange={this.handleInputChange}/>
               </FormGroup>
-            </Form>
-          </ModalBody>
-            <ButtonGroup className='float-left'>
-              <Button theme='secondary' onClick={ () => { this.handleUpdate() } }>
-                <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
-              </Button>
-              <Button theme='danger' className='ml-1' onClick={ () => { this.toggleModal() } }>
+              <ButtonGroup className='float-right'>
+                <Button className='w-20' theme='secondary' onClick={ () => { this.handleUpdate() } }>
+                  <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
+                </Button>
+                <Button theme='danger' className='ml-1' onClick={ () => { this.toggleModal() } }>
                   <FontAwesomeIcon className='ml-1' icon={faTimes} />
                 </Button>
-            </ButtonGroup>
+              </ButtonGroup>
+            </Form>
+          </ModalBody>
         </Modal>
       </Container>
     )

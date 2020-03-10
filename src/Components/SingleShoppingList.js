@@ -8,9 +8,9 @@ import {
   FormInput,
   FormGroup} from 'shards-react'
 import { faArrowDown, faArrowUp, faTimes, faPencilAlt, faPlus } from "@fortawesome/free-solid-svg-icons";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import ConfirmDelete from './ConfirmDelete'
 import ShoppingListItems from './ShoppingListItems'
 
 import ShoppingListService from '../store/services/ShoppingListService'
@@ -170,8 +170,12 @@ export default class SingleShoppingList extends React.Component {
   render() {
     return (
       <Container>
+        <ConfirmDelete title='Delete List?'
+                       closeModal={close => this.closeConfirmModal = close}
+                       openModal={open => this.openConfirmModal = open}
+                       onDeleteConfirmation={this.deleteShoppingList}/>
         <Button className='mb-2' outline onClick={this.toggle}>{ this.props.name }
-          <FontAwesomeIcon className='ml-1' icon = { this.state.collapse ? faArrowDown : faArrowUp } />
+          <FontAwesomeIcon className='ml-1' icon = { this.state.collapse ? faArrowUp : faArrowDown } />
         </Button>
         { this.state.collapse &&
           <FormGroup>
@@ -180,7 +184,7 @@ export default class SingleShoppingList extends React.Component {
               <Button className='ml-1' theme="secondary" onClick={ () => { this.updateName(this.state.name) } }>
                 <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
               </Button>
-              <Button className='ml-1' theme="danger" onClick={ () => { this.deleteShoppingList() } }>
+              <Button className='ml-1' theme="danger" onClick={ () => { this.openConfirmModal() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
               </Button>
             </InputGroup>
