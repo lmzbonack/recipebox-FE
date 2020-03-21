@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, ButtonGroup, Modal, ModalBody, ModalHeader, Form, FormInput, FormGroup, Container  } from 'shards-react'
+import { Button, ButtonGroup, Modal, ModalBody, ModalHeader, Container  } from 'shards-react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 
