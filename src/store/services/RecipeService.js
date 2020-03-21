@@ -1,0 +1,75 @@
+/**
+ * Service for Interacting with Recipes endpoint
+ */
+import axios from 'axios'
+import { navigate } from "@reach/router"
+
+import utils from './utils'
+
+export default {
+  /**
+   * Creates a single recipe
+   * @param {Object} payload an object containing values for the recipe to create
+   */
+  async create(payload) {
+    let token = await utils.retrieveAuthToken()
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      return axios.post(`${process.env.REACT_APP_API_URL}/recipes/`, payload, config)
+    } else {
+      navigate('/login')
+      return 'No Token'
+    }
+  },
+  /**
+   * Retrieves a single recipe
+   * @param {string} id the id of the recipe
+   */
+  async fetchOne(id) {
+    let token = await utils.retrieveAuthToken()
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      return axios.get(`${process.env.REACT_APP_API_URL}/recipes/${id}`, config)
+    } else {
+      navigate('/login')
+      return 'No Token'
+    }
+  },
+  /**
+   * Updates a single recipe
+   * @param {string} id the id of the recipe
+   * @param {Object} payload an object containing values for the recipe to update
+   */
+  async update(id, payload) {
+    let token = await utils.retrieveAuthToken()
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      return axios.put(`${process.env.REACT_APP_API_URL}/recipes/${id}`, payload, config)
+    } else {
+      navigate('/login')
+      return 'No Token'
+    }
+  },
+  /**
+   * Deletes a single recipe
+   * @param {string} id the id of the recipe
+   */
+  async delete(id) {
+    let token = await utils.retrieveAuthToken()
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      return axios.delete(`${process.env.REACT_APP_API_URL}/recipes/${id}`, config)
+    } else {
+      navigate('/login')
+      return 'No Token'
+    }
+  },
+}

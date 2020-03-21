@@ -23,7 +23,7 @@ export default class SingleShoppingList extends React.Component {
       collapse: false,
       name: '',
       newIngredient: '',
-      error: []
+      error: ''
     }
     this.toggle = this.toggle.bind(this)
     this.handleIngredientDelete = this.handleIngredientDelete.bind(this)
@@ -35,13 +35,11 @@ export default class SingleShoppingList extends React.Component {
   }
 
   componentDidMount() {
-    this.setState(
-      {
-        collapse: this.state.collapse,
-        name: this.props.name,
-        newIngredient: ''
-      }
-    )
+    this.setState( (state, props) => ({
+      collapse: this.state.collapse,
+      name: this.props.name,
+      newIngredient: ''
+    }))
   }
 
   toggle() {

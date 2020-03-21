@@ -74,7 +74,6 @@ export default class NavExample extends React.Component {
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem href='/recipes'>Search</DropdownItem>
-                <DropdownItem href='#'>Add</DropdownItem>
               </DropdownMenu>
             </Dropdown>
 
