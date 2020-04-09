@@ -17,20 +17,38 @@ import RecipeService from '../../store/services/RecipeService'
 export default class RecipeForm extends React.Component {
   constructor(props){
     super(props)
-    this.state = {
-      error: '',
-      newIngredient: '',
-      newInstruction: '',
-      collapseInstructions: false,
-      collapseIngredients: false,
-      id: this.props.recipe._id.$oid,
-      name: this.props.recipe.name,
-      author: this.props.recipe.author,
-      ingredients: this.props.recipe.ingredients,
-      instructions: this.props.recipe.instructions,
-      prep_time: this.props.recipe.prep_time,
-      cook_time: this.props.recipe.cook_time,
-    }
+    if (props.mode === 'edit') {
+      this.state = {
+        error: '',
+        newIngredient: '',
+        newInstruction: '',
+        collapseInstructions: false,
+        collapseIngredients: false,
+        id: this.props.recipe._id.$oid,
+        name: this.props.recipe.name,
+        author: this.props.recipe.author,
+        ingredients: this.props.recipe.ingredients,
+        instructions: this.props.recipe.instructions,
+        prep_time: this.props.recipe.prep_time,
+        cook_time: this.props.recipe.cook_time,
+      }
+    } else {
+        this.state = {
+          error: '',
+          newIngredient: '',
+          newInstruction: '',
+          collapseInstructions: false,
+          collapseIngredients: false,
+          id: null,
+          name: null,
+          author: null,
+          ingredients: [],
+          instructions: [],
+          prep_time: null,
+          cook_time: null,
+        }
+      }
+
     this.addIngredient = this.addIngredient.bind(this)
     this.addInstruction = this.addInstruction.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -39,14 +57,47 @@ export default class RecipeForm extends React.Component {
     this.toggleInstructions = this.toggleInstructions.bind(this)
     this.toggleIngredients = this.toggleIngredients.bind(this)
     this.submitEditedRecipe = this.submitEditedRecipe.bind(this)
+    this.submitCreatedRecipe = this.submitCreatedRecipe.bind(this)
   }
 
   componentDidMount() {
-    this.props.setRecipeEdit(this.submitEditedRecipe);
+    if (this.props.mode === 'edit') this.props.setRecipeEdit(this.submitEditedRecipe);
+    if (this.props.mode === 'create') this.props.setCreateRecipe(this.submitCreatedRecipe);
     this.setState( (state, props) => ({
       collapseInstructions: state.collapseInstructions,
       collapseIngredients: state.collapseIngredients
     }))
+  }
+
+  async submitCreatedRecipe() {
+    console.log(this.state)
+    let filteredIngredients = this.state.ingredients.filter( (val) => {
+      return val !== ''
+    })
+
+    let filteredInstructions = this.state.instructions.filter( (val) => {
+      return val !== ''
+    })
+
+    const payload = {
+      name: this.state.name,
+      author: this.state.author,
+      ingredients: filteredIngredients,
+      instructions: filteredInstructions,
+      prep_time: this.state.prep_time,
+      cook_time: this.state.cook_time,
+    }
+    try {
+      let updatedRecipeResponse = await RecipeService.create(payload)
+      if (updatedRecipeResponse.status === 201) {
+        const payload = {
+          id: this.props.id
+        }
+        this.props.onRecipesChangeTop(payload)
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   async submitEditedRecipe() {
@@ -110,9 +161,9 @@ export default class RecipeForm extends React.Component {
       })
       return
     }
-    newInstructions.unshift(this.state.newInstruction)
+    newInstructions.push(this.state.newInstruction)
     this.setState( (state, props) => ({
-      ingredients: newInstructions,
+      instructions: newInstructions,
       newInstruction: ''
     }))
   }
