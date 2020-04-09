@@ -3,8 +3,7 @@ import React from 'react'
 import { Button, ButtonGroup, Container, Modal, ModalBody, ModalHeader, ModalFooter } from 'shards-react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes, faPencilAlt } from "@fortawesome/free-solid-svg-icons"
-
+import { faTimes, faPencilAlt, faPlus } from "@fortawesome/free-solid-svg-icons"
 
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -20,6 +19,7 @@ export default class CreatedRecipes extends React.Component {
     super(props)
     this.state = {
       open: false,
+      newOpen: false,
       activeRecipe: undefined,
       columnsDefs: [
         {headerName: 'Name', field: 'name', sortable: true, filter: true, resizable: true},
@@ -38,8 +38,10 @@ export default class CreatedRecipes extends React.Component {
     this.retrieveCreatedRecipes = this.retrieveCreatedRecipes.bind(this)
     this.editRecipe = this.editRecipe.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
+    this.toggleNewModal = this.toggleNewModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
-    this.handleRecipesChangeTop = this.handleRecipesChangeTop.bind(this)
+    this.handleRecipesChangeEdit = this.handleRecipesChangeEdit.bind(this)
+    this.handleRecipesChangeCreate = this.handleRecipesChangeCreate.bind(this)
   }
 
   async retrieveCreatedRecipes() {
@@ -59,9 +61,14 @@ export default class CreatedRecipes extends React.Component {
       }
   }
 
-  handleRecipesChangeTop() {
+  handleRecipesChangeEdit() {
     this.retrieveCreatedRecipes()
     this.toggleModal()
+  }
+
+  handleRecipesChangeCreate() {
+    this.retrieveCreatedRecipes()
+    this.toggleNewModal()
   }
 
   editRecipe(event) {
@@ -75,6 +82,12 @@ export default class CreatedRecipes extends React.Component {
     this.setState({
       open: !this.state.open,
     });
+  }
+
+  toggleNewModal() {
+    this.setState({
+      newOpen: !this.state.newOpen,
+    })
   }
 
   closeModal(event) {
@@ -98,12 +111,39 @@ export default class CreatedRecipes extends React.Component {
   };
 
   render() {
-    const { open } = this.state
+    const { open, newOpen } = this.state
     return (
       <Container className='mt-3 ag-theme-balham w-100'
                  style={{
                   "height": 600
                  }}>
+        <Button className='mb-2 mt-2' size='md' onClick={this.toggleNewModal}>Add
+            <FontAwesomeIcon className='ml-1' icon={faPlus} />
+        </Button>
+        <Modal size="lg h-100"
+               open={newOpen}
+               toggle={this.toggleNewModal}>
+          <ModalHeader>New Recipe</ModalHeader>
+          <ModalBody style={{
+              "overflowY": "auto",
+              "height": "500px"
+              }}>
+            <RecipeForm mode='create'
+                        setCreateRecipe={createRecipe => this.createRecipeChild = createRecipe}
+                        onRecipesChangeTop={this.handleRecipesChangeCreate}/>
+          </ModalBody>
+          <ModalFooter>
+            <ButtonGroup className='float-left'>
+              <Button theme='secondary' className='ml-1' onClick={ () => this.createRecipeChild() }>
+                <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
+              </Button>
+              <Button theme='danger' className='ml-1' onClick={ () => { this.toggleNewModal() } }>
+                <FontAwesomeIcon className='ml-1' icon={faTimes} />
+              </Button>
+            </ButtonGroup>
+          </ModalFooter>
+        </Modal>
+
         <Modal size="lg h-100"
                open={open}
                toggle={this.toggleModal}>
@@ -112,9 +152,10 @@ export default class CreatedRecipes extends React.Component {
               "overflowY": "auto",
               "height": "500px"
               }}>
-            <RecipeForm recipe={this.state.activeRecipe}
+            <RecipeForm mode='edit'
+                        recipe={this.state.activeRecipe}
                         setRecipeEdit={recipeEdit => this.recipeEditChild = recipeEdit}
-                        onRecipesChangeTop={this.handleRecipesChangeTop}/>
+                        onRecipesChangeTop={this.handleRecipesChangeEdit}/>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
