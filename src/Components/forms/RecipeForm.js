@@ -58,10 +58,14 @@ export default class RecipeForm extends React.Component {
     this.toggleIngredients = this.toggleIngredients.bind(this)
     this.submitEditedRecipe = this.submitEditedRecipe.bind(this)
     this.submitCreatedRecipe = this.submitCreatedRecipe.bind(this)
+    this.deleteRecipe = this.deleteRecipe.bind(this)
   }
 
   componentDidMount() {
-    if (this.props.mode === 'edit') this.props.setRecipeEdit(this.submitEditedRecipe);
+    if (this.props.mode === 'edit') {
+      this.props.setRecipeEdit(this.submitEditedRecipe)
+      this.props.setRecipeDelete(this.deleteRecipe)
+    }
     if (this.props.mode === 'create') this.props.setCreateRecipe(this.submitCreatedRecipe);
     this.setState( (state, props) => ({
       collapseInstructions: state.collapseInstructions,
@@ -70,7 +74,6 @@ export default class RecipeForm extends React.Component {
   }
 
   async submitCreatedRecipe() {
-    console.log(this.state)
     let filteredIngredients = this.state.ingredients.filter( (val) => {
       return val !== ''
     })
@@ -120,6 +123,20 @@ export default class RecipeForm extends React.Component {
     try {
       let updatedRecipeResponse = await RecipeService.update(this.state.id, payload)
       if (updatedRecipeResponse.status === 200) {
+        const payload = {
+          id: this.props.id
+        }
+        this.props.onRecipesChangeTop(payload)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  async deleteRecipe() {
+    try {
+      let updatedRecipeResponse = await RecipeService.delete(this.state.id)
+      if (updatedRecipeResponse.status === 204) {
         const payload = {
           id: this.props.id
         }

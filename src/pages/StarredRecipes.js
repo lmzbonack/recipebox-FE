@@ -1,18 +1,22 @@
 import React from 'react'
 
 import UserService from '../store/services/UserService'
-import { Container } from 'shards-react'
+import { Button, Container } from 'shards-react'
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faStar } from "@fortawesome/free-solid-svg-icons"
 
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-balham.css'
 import LengthRenderer from '../Components/renderers/LengthRenderer'
 
+import RecipeService from '../store/services/RecipeService'
+
 export default class StarredRecipes extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      activeRecipe: undefined,
       columnsDefs: [
         {headerName: 'Name', field: 'name', sortable: true, filter: true, resizable: true},
         {headerName: 'Author', field: 'author', sortable: true, filter: true, resizable: true},
@@ -28,6 +32,7 @@ export default class StarredRecipes extends React.Component {
       error: ''
     }
     this.retrieveStarredRecipes = this.retrieveStarredRecipes.bind(this)
+    this.unstar = this.unstar.bind(this)
   }
 
   async retrieveStarredRecipes() {
@@ -47,6 +52,20 @@ export default class StarredRecipes extends React.Component {
       }
   }
 
+  async unstar () {
+    const rowData = this.gridApi.getSelectedRows()
+    // Get first row only
+    const id = rowData[0]._id['$oid']
+    try {
+      let unStarRecipeResponse = await RecipeService.unStar(id)
+      if (unStarRecipeResponse.status === 200) {
+        this.retrieveStarredRecipes()
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   async componentDidMount() {
     await this.retrieveStarredRecipes()
   }
@@ -58,7 +77,7 @@ export default class StarredRecipes extends React.Component {
 
   onFirstDataRendered = params => {
     params.api.sizeColumnsToFit();
-  };
+  }
 
   render() {
     return(
@@ -66,6 +85,9 @@ export default class StarredRecipes extends React.Component {
                  style={{
                   "height": 600
                  }}>
+        <Button theme='danger' className='mb-2 mt-2' size='md' onClick={this.unstar}>UnStar
+            <FontAwesomeIcon className='ml-1' icon={faStar} />
+        </Button>
         <AgGridReact
           columnDefs={this.state.columnsDefs}
           rowData={this.state.starredRecipes}

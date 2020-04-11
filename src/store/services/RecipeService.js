@@ -58,7 +58,7 @@ export default {
   },
   /**
    * Deletes a single recipe
-   * @param {string} id the id of the recipe
+   * @param {string} id the id of the recipe to be deleted
    */
   async delete(id) {
     let token = await utils.retrieveAuthToken()
@@ -67,6 +67,38 @@ export default {
         headers: { Authorization: `Bearer ${token}` }
       }
       return axios.delete(`${process.env.REACT_APP_API_URL}/recipes/${id}`, config)
+    } else {
+      navigate('/login')
+      return 'No Token'
+    }
+  },
+  /**
+   * Stars a single recipe
+   * @param {string} id the id of the recipe to be starred
+   */
+  async star(id) {
+    let token = await utils.retrieveAuthToken()
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      return axios.put(`${process.env.REACT_APP_API_URL}/star/${id}`, config)
+    } else {
+      navigate('/login')
+      return 'No Token'
+    }
+  },
+  /**
+   * UnStars a single recipe
+   * @param {string} id the id of the recipe to be unstarred
+   */
+  async unStar(id) {
+    let token = await utils.retrieveAuthToken()
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      return axios.delete(`${process.env.REACT_APP_API_URL}/star/${id}`, config)
     } else {
       navigate('/login')
       return 'No Token'

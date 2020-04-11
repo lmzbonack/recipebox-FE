@@ -3,7 +3,7 @@ import React from 'react'
 import { Button, ButtonGroup, Container, Modal, ModalBody, ModalHeader, ModalFooter } from 'shards-react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes, faPencilAlt, faPlus } from "@fortawesome/free-solid-svg-icons"
+import { faTimes, faPencilAlt, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -155,15 +155,19 @@ export default class CreatedRecipes extends React.Component {
             <RecipeForm mode='edit'
                         recipe={this.state.activeRecipe}
                         setRecipeEdit={recipeEdit => this.recipeEditChild = recipeEdit}
+                        setRecipeDelete={recipeDelete => this.recipeDeleteChild = recipeDelete}
                         onRecipesChangeTop={this.handleRecipesChangeEdit}/>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
+              <Button theme='warning' className='ml-1' onClick={ () => { this.toggleModal() } }>
+                <FontAwesomeIcon className='ml-1' icon={faTimes} />
+              </Button>
               <Button theme='secondary' className='ml-1' onClick={ () => this.recipeEditChild() }>
                 <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
               </Button>
-              <Button theme='danger' className='ml-1' onClick={ () => { this.toggleModal() } }>
-                <FontAwesomeIcon className='ml-1' icon={faTimes} />
+              <Button theme='danger' className='ml-1' onClick={ () => { this.recipeDeleteChild() } }>
+                <FontAwesomeIcon className='ml-1' icon={faTrash} />
               </Button>
             </ButtonGroup>
           </ModalFooter>
