@@ -12,6 +12,7 @@ import LengthRenderer from '../Components/renderers/LengthRenderer'
 
 import UserService from '../store/services/UserService'
 import RecipeForm from '../Components/forms/RecipeForm'
+import DynamicModalHeader from '../Components/DynamicModalHeader'
 
 export default class CreatedRecipes extends React.Component {
   constructor(props) {
@@ -32,6 +33,7 @@ export default class CreatedRecipes extends React.Component {
         lengthRenderer: LengthRenderer,
       },
       createdRecipes: null,
+      userData: null,
       error: ''
     }
     this.retrieveCreatedRecipes = this.retrieveCreatedRecipes.bind(this)
@@ -59,6 +61,23 @@ export default class CreatedRecipes extends React.Component {
           error: error.response.data.message
         })
       }
+  }
+
+  async retrieveUserDetails() {
+    try {
+      let userDetailsReponse = await UserService.fetchUserOverview()
+      if (userDetailsReponse) {
+        this.setState({
+          userData: userDetailsReponse.data,
+          error: ''
+        })
+      }
+    } catch (error) {
+      console.error(error)
+      this.setState({
+        error: error.recipes.data.message
+      })
+    }
   }
 
   handleRecipesChangeEdit() {
@@ -98,7 +117,8 @@ export default class CreatedRecipes extends React.Component {
   }
 
   async componentDidMount() {
-    await this.retrieveCreatedRecipes()
+    this.retrieveCreatedRecipes()
+    this.retrieveUserDetails()
   }
 
   onGridReady = params => {
@@ -147,7 +167,8 @@ export default class CreatedRecipes extends React.Component {
         <Modal size="lg h-100"
                open={open}
                toggle={this.toggleModal}>
-          <ModalHeader>Recipe Details</ModalHeader>
+          <DynamicModalHeader recipe={this.state.activeRecipe}
+                              userData={this.state.userData}/>
           <ModalBody style={{
               "overflowY": "auto",
               "height": "500px"

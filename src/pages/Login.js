@@ -62,7 +62,7 @@ export default class Login extends React.Component {
         navigate('/recipes')
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
       this.setState({
         email: '',
         password: '',

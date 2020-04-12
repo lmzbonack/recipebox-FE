@@ -23,7 +23,6 @@ export default class ShoppingList extends React.Component {
   handleIngredientChangeTop(payload) {
     // For now this is fine eventually we will want to just fetch and pass into state the one list that changes
     // const updatedList= await ShoppingListService.fetchOne(payload.id)
-    console.log(this.state)
     this.retrieveShoppingLists()
   }
 
