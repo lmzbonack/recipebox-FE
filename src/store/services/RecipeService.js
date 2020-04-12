@@ -97,7 +97,7 @@ export default {
       const config = {
         headers: { Authorization: `Bearer ${token}` }
       }
-      return axios.put(`${process.env.REACT_APP_API_URL}/star/${id}`, config)
+      return axios.put(`${process.env.REACT_APP_API_URL}/star/${id}`, {}, config)
     } else {
       navigate('/login')
       return 'No Token'

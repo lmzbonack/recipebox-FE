@@ -1,14 +1,23 @@
 import React from 'react'
-import { Container, Modal, ModalBody, ModalHeader, ModalFooter } from 'shards-react'
+import { Button,
+         ButtonGroup,
+         Container,
+         Modal,
+         ModalBody,
+         ModalFooter } from 'shards-react'
+
+import RecipeContent from '../Components/RecipeContent'
+import DynamicModalHeader from '../Components/DynamicModalHeader'
+import RecipeService from '../store/services/RecipeService'
+import UserService from '../store/services/UserService'
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTimes, faStar } from "@fortawesome/free-solid-svg-icons"
 
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-balham.css'
 import LengthRenderer from '../Components/renderers/LengthRenderer'
-
-import RecipeContent from '../Components/RecipeContent'
-
-import RecipeService from '../store/services/RecipeService';
 
 export default class Recipes extends React.Component {
   constructor(props) {
@@ -26,18 +35,24 @@ export default class Recipes extends React.Component {
         lengthRenderer: LengthRenderer,
       },
       recipes: null,
+      userData: null,
       activeRecipe: undefined,
       error: ''
     }
     this.toggleModal = this.toggleModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.viewRecipeDetails = this.viewRecipeDetails.bind(this)
+    this.handleRecipeStar = this.handleRecipeStar.bind(this)
   }
 
   toggleModal() {
     this.setState({
       open: !this.state.open,
     });
+  }
+
+  handleRecipeStar() {
+    this.toggleModal()
   }
 
   closeModal(event) {
@@ -52,6 +67,23 @@ export default class Recipes extends React.Component {
       activeRecipe: event.data
     })
     this.toggleModal()
+  }
+
+  async retrieveUserDetails() {
+    try {
+      let userDetailsReponse = await UserService.fetchUserOverview()
+      if (userDetailsReponse) {
+        this.setState({
+          userData: userDetailsReponse.data,
+          error: ''
+        })
+      }
+    } catch (error) {
+      console.error(error)
+      this.setState({
+        error: error.recipes.data.message
+      })
+    }
   }
 
   async retrieveRecipes() {
@@ -71,8 +103,9 @@ export default class Recipes extends React.Component {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this.retrieveRecipes()
+    this.retrieveUserDetails()
   }
 
   onGridReady = params => {
@@ -94,15 +127,26 @@ export default class Recipes extends React.Component {
         <Modal size="lg h-100"
                open={open}
                toggle={this.toggleModal}>
-          <ModalHeader>Recipe Details</ModalHeader>
+          <DynamicModalHeader recipe={this.state.activeRecipe}
+                              userData={this.state.userData}/>
           <ModalBody style={{
               "overflowY": "auto",
               "height": "500px"
               }}>
-            <RecipeContent recipe={this.state.activeRecipe} />
+            <RecipeContent recipe={this.state.activeRecipe}
+                           mode = 'star'
+                           setStarRecipe={starRecipe => this.starRecipeChild = starRecipe}
+                           onRecipesStarredTop={this.handleRecipeStar}/>
           </ModalBody>
           <ModalFooter>
-            <p>Placeholder</p>
+            <ButtonGroup className='float-left'>
+                <Button theme='danger' className='ml-1' onClick={ () => { this.toggleModal() } }>
+                  <FontAwesomeIcon className='ml-1' icon={faTimes} />
+                </Button>
+                <Button theme='secondary' className='ml-1' onClick={ () => this.starRecipeChild() }>
+                  <FontAwesomeIcon className='ml-1' icon={faStar} />
+                </Button>
+              </ButtonGroup>
           </ModalFooter>
         </Modal>
         <AgGridReact

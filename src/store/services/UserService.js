@@ -22,6 +22,21 @@ export default {
     return axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, payload)
   },
   /**
+   * Retrieves User Overview
+   */
+  async fetchUserOverview() {
+    let token = await utils.retrieveAuthToken()
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      return axios.get(`${process.env.REACT_APP_API_URL}/user`, config)
+    } else {
+      navigate('/login')
+      return 'No Token'
+    }
+  },
+  /**
    * Retrieves specific piece of user data for a logged in user
    * @param {string} dataPiece the route name for the piece of data
    * being retrieved EG. 'shopping-list' 'starred-recipes'
