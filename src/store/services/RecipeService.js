@@ -40,6 +40,21 @@ export default {
     }
   },
   /**
+   * Retrieves al recipes
+   */
+  async fetchAll() {
+    let token = await utils.retrieveAuthToken()
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      return axios.get(`${process.env.REACT_APP_API_URL}/recipes`, config)
+    } else {
+      navigate('/login')
+      return 'No Token'
+    }
+  },
+  /**
    * Updates a single recipe
    * @param {string} id the id of the recipe
    * @param {Object} payload an object containing values for the recipe to update

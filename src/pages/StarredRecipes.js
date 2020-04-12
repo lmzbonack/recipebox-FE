@@ -1,6 +1,5 @@
 import React from 'react'
 
-import UserService from '../store/services/UserService'
 import { Button, Container } from 'shards-react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -11,6 +10,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-balham.css'
 import LengthRenderer from '../Components/renderers/LengthRenderer'
 
+import UserService from '../store/services/UserService'
 import RecipeService from '../store/services/RecipeService'
 
 export default class StarredRecipes extends React.Component {
