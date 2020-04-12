@@ -13,7 +13,6 @@ import LengthRenderer from '../Components/renderers/LengthRenderer'
 import UserService from '../store/services/UserService'
 import RecipeForm from '../Components/forms/RecipeForm'
 
-
 export default class CreatedRecipes extends React.Component {
   constructor(props) {
     super(props)
@@ -24,8 +23,8 @@ export default class CreatedRecipes extends React.Component {
       columnsDefs: [
         {headerName: 'Name', field: 'name', sortable: true, filter: true, resizable: true},
         {headerName: 'Author', field: 'author', sortable: true, filter: true, resizable: true},
-        {headerName: '# of Ingredients', field: 'ingredients', sortable: true, filter: true, resizable: true, cellRenderer: 'lengthRenderer' },
-        {headerName: '# of Instructions', field: 'instructions', sortable: true, filter: true, resizable: true, cellRenderer: 'lengthRenderer' },
+        {headerName: '# of Ingredients', field: 'ingredients', sortable: true, filter: true, resizable: true, cellRenderer: 'lengthRenderer'},
+        {headerName: '# of Instructions', field: 'instructions', sortable: true, filter: true, resizable: true, cellRenderer: 'lengthRenderer'},
         {headerName: 'Prep Time', field: 'prep_time', sortable: true, filter: true, resizable: true},
         {headerName: 'Cook Time', field: 'cook_time', sortable: true, filter: true, resizable: true},
       ],
@@ -52,6 +51,7 @@ export default class CreatedRecipes extends React.Component {
           createdRecipes: createdRecipesResponse.data,
           error: ''
         })
+        console.log(this.state.createdRecipes)
       }
     } catch (error) {
         console.error(error)
@@ -134,11 +134,11 @@ export default class CreatedRecipes extends React.Component {
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
-              <Button theme='secondary' className='ml-1' onClick={ () => this.createRecipeChild() }>
-                <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
-              </Button>
               <Button theme='danger' className='ml-1' onClick={ () => { this.toggleNewModal() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
+              </Button>
+              <Button theme='secondary' className='ml-1' onClick={ () => this.createRecipeChild() }>
+                <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
               </Button>
             </ButtonGroup>
           </ModalFooter>
@@ -160,14 +160,14 @@ export default class CreatedRecipes extends React.Component {
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
+              <Button theme='danger' className='ml-1' onClick={ () => { this.recipeDeleteChild() } }>
+                <FontAwesomeIcon className='ml-1' icon={faTrash} />
+              </Button>
               <Button theme='warning' className='ml-1' onClick={ () => { this.toggleModal() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
               </Button>
               <Button theme='secondary' className='ml-1' onClick={ () => this.recipeEditChild() }>
                 <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
-              </Button>
-              <Button theme='danger' className='ml-1' onClick={ () => { this.recipeDeleteChild() } }>
-                <FontAwesomeIcon className='ml-1' icon={faTrash} />
               </Button>
             </ButtonGroup>
           </ModalFooter>

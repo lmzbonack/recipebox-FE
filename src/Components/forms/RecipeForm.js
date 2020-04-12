@@ -31,6 +31,7 @@ export default class RecipeForm extends React.Component {
         instructions: this.props.recipe.instructions,
         prep_time: this.props.recipe.prep_time,
         cook_time: this.props.recipe.cook_time,
+        external_link: this.props.recipe.external_link,
       }
     } else {
         this.state = {
@@ -89,6 +90,7 @@ export default class RecipeForm extends React.Component {
       instructions: filteredInstructions,
       prep_time: this.state.prep_time,
       cook_time: this.state.cook_time,
+      external_link: this.state.external_link,
     }
     try {
       let updatedRecipeResponse = await RecipeService.create(payload)
@@ -119,6 +121,7 @@ export default class RecipeForm extends React.Component {
       instructions: filteredInstructions,
       prep_time: this.state.prep_time,
       cook_time: this.state.cook_time,
+      external_link: this.state.external_link,
     }
     try {
       let updatedRecipeResponse = await RecipeService.update(this.state.id, payload)
@@ -231,23 +234,31 @@ export default class RecipeForm extends React.Component {
                      value={this.state.author || ''}
                      onChange={this.handleInputChange}/>
         </FormGroup>
+        <FormGroup>
+          <label htmlFor="#externalLink">Extenal Link</label>
+          <FormInput name="external_link"
+                     id="#externalLink"
+                     placeholder="External Link"
+                     value={this.state.external_link || ''}
+                     onChange={this.handleInputChange}/>
+        </FormGroup>
         <div className="form-row">
-        <FormGroup className="col">
-          <label htmlFor="#prepTime">Prep Time</label>
-          <FormInput name="prep_time"
-                     id="#prepTime"
-                     placeholder="Prep Time"
-                     value={this.state.prep_time || ''}
-                     onChange={this.handleInputChange}/>
-        </FormGroup>
-        <FormGroup className="col">
-          <label htmlFor="#cookTime">Cook Time</label>
-          <FormInput name="cook_time"
-                     id="#cookTime"
-                     placeholder="Cook Time"
-                     value={this.state.cook_time || ''}
-                     onChange={this.handleInputChange}/>
-        </FormGroup>
+          <FormGroup className="col">
+            <label htmlFor="#prepTime">Prep Time</label>
+            <FormInput name="prep_time"
+                      id="#prepTime"
+                      placeholder="Prep Time"
+                      value={this.state.prep_time || ''}
+                      onChange={this.handleInputChange}/>
+          </FormGroup>
+          <FormGroup className="col">
+            <label htmlFor="#cookTime">Cook Time</label>
+            <FormInput name="cook_time"
+                      id="#cookTime"
+                      placeholder="Cook Time"
+                      value={this.state.cook_time || ''}
+                      onChange={this.handleInputChange}/>
+          </FormGroup>
         </div>
         <FormGroup>
           <Button outline onClick={this.toggleIngredients}>Ingredients

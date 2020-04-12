@@ -6,7 +6,7 @@ import {
   Collapse,
   InputGroup,
   FormInput,
-  FormGroup} from 'shards-react'
+  FormGroup } from 'shards-react'
 import { faArrowDown, faArrowUp, faTimes, faPencilAlt, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
