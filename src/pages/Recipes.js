@@ -131,7 +131,7 @@ export default class Recipes extends React.Component {
                               userData={this.state.userData}/>
           <ModalBody style={{
               "overflowY": "auto",
-              "height": "500px"
+              "height": "65vh"
               }}>
             <RecipeContent recipe={this.state.activeRecipe}
                            mode = 'star'

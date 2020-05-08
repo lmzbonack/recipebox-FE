@@ -151,7 +151,7 @@ export default class StarredRecipes extends React.Component {
                               userData={this.state.userData}/>
           <ModalBody style={{
               "overflowY": "auto",
-              "height": "500px"
+              "height": "65vh"
               }}>
             <RecipeContent recipe={this.state.activeRecipe}
                            mode = 'unstar'

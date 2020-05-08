@@ -1,6 +1,12 @@
 import React from 'react'
 
-import { Button, ButtonGroup, Container, Modal, ModalBody, ModalHeader, ModalFooter } from 'shards-react'
+import { Button,
+         ButtonGroup,
+         Container,
+         Modal,
+         ModalBody,
+         ModalHeader,
+         ModalFooter } from 'shards-react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTimes, faPencilAlt, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
@@ -140,13 +146,15 @@ export default class CreatedRecipes extends React.Component {
         <Button className='mb-2 mt-2' size='md' onClick={this.toggleNewModal}>Add
             <FontAwesomeIcon className='ml-1' icon={faPlus} />
         </Button>
-        <Modal size="lg h-100"
+
+        {/*New Modal  */}
+        <Modal size="lg"
                open={newOpen}
                toggle={this.toggleNewModal}>
           <ModalHeader>New Recipe</ModalHeader>
           <ModalBody style={{
               "overflowY": "auto",
-              "height": "500px"
+              "height": "65vh"
               }}>
             <RecipeForm mode='create'
                         setCreateRecipe={createRecipe => this.createRecipeChild = createRecipe}
@@ -164,14 +172,15 @@ export default class CreatedRecipes extends React.Component {
           </ModalFooter>
         </Modal>
 
-        <Modal size="lg h-100"
+        {/* Edit Modal */}
+        <Modal size="lg"
                open={open}
                toggle={this.toggleModal}>
           <DynamicModalHeader recipe={this.state.activeRecipe}
                               userData={this.state.userData}/>
           <ModalBody style={{
               "overflowY": "auto",
-              "height": "500px"
+              "height": "65vh"
               }}>
             <RecipeForm mode='edit'
                         recipe={this.state.activeRecipe}
@@ -193,6 +202,7 @@ export default class CreatedRecipes extends React.Component {
             </ButtonGroup>
           </ModalFooter>
         </Modal>
+
         <AgGridReact
           columnDefs={this.state.columnsDefs}
           rowData={this.state.createdRecipes}
