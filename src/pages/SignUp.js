@@ -54,7 +54,7 @@ export default class SignUp extends React.Component {
       let signUpResponse = await UserService.signUp(payload)
       if (signUpResponse.status === 201) {
         let automaticSignIn = await UserService.login(payload)
-        if (signUpResponse.status === 201) {
+        if (automaticSignIn.status === 201) {
           navigate('/recipes')
         }
       }

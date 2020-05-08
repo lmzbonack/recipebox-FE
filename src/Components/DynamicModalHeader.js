@@ -1,21 +1,12 @@
 import React from 'react'
 
-import { Badge, ModalHeader, Modal } from 'shards-react'
+import { Badge, ModalHeader } from 'shards-react'
 
 export default class DynamicModalHeader extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  componentDidMount() {
-    console.log(this.props.recipe._id.$oid)
-    console.log(this.props.userData.starred_recipes)
-  }
-
   render() {
     return (
       <ModalHeader>
-        <a href={this.props.recipe.external_link} target="_blank">
+        <a href={this.props.recipe.external_link} target="_blank" rel="noopener noreferrer">
           { this.props.recipe.name }
         </a>
         <div className='float-right ml-2'>
