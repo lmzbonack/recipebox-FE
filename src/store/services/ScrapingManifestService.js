@@ -18,7 +18,6 @@ export default {
       const config = {
         headers: { Authorization: `Bearer ${token}` }
       }
-
       return axios.post(`${process.env.REACT_APP_API_URL}/scraping-manifest`, payload, config)
     } else {
       navigate('/login')
@@ -35,7 +34,6 @@ export default {
       const config = {
         headers: { Authorization: `Bearer ${token}` }
       }
-
       return axios.get(`${process.env.REACT_APP_API_URL}/scraping-manifest/${id}`, config)
     } else {
       navigate('/login')
@@ -51,7 +49,6 @@ export default {
       const config = {
         headers: { Authorization: `Bearer ${token}` }
       }
-
       return axios.get(`${process.env.REACT_APP_API_URL}/scraping-manifest`, config)
     } else {
       navigate('/login')
@@ -69,7 +66,6 @@ export default {
       const config = {
         headers: { Authorization: `Bearer ${token}` }
       }
-
       return axios.put(`${process.env.REACT_APP_API_URL}/scraping-manifest/${id}`, payload, config)
     } else {
       navigate('/login')
@@ -86,7 +82,6 @@ export default {
       const config = {
         headers: { Authorization: `Bearer ${token}` }
       }
-
       return axios.delete(`${process.env.REACT_APP_API_URL}/scraping-manifest/${id}`, config)
     } else {
       navigate('/login')
@@ -103,11 +98,12 @@ export default {
       const config = {
         headers: { Authorization: `Bearer ${token}` }
       }
-
-      return axios.get(`${process.env.REACT_APP_API_URL}/scrape`, payload, config)
+      return axios.post(`${process.env.REACT_APP_API_URL}/scrape`, payload, config)
     } else {
       navigate('/login')
       return 'No Token'
     }
-  }
+  },
+
+
 }

@@ -9,7 +9,7 @@ import { Button,
          ModalFooter } from 'shards-react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes, faPencilAlt, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faTimes, faPencilAlt, faPlus, faTrash, faCaravan } from "@fortawesome/free-solid-svg-icons"
 
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -59,7 +59,6 @@ export default class CreatedRecipes extends React.Component {
           createdRecipes: createdRecipesResponse.data,
           error: ''
         })
-        console.log(this.state.createdRecipes)
       }
     } catch (error) {
         console.error(error)
@@ -158,12 +157,17 @@ export default class CreatedRecipes extends React.Component {
               }}>
             <RecipeForm mode='create'
                         setCreateRecipe={createRecipe => this.createRecipeChild = createRecipe}
+                        setScrapeRecipe={scrapeRecipe => this.scrapeRecipeChild = scrapeRecipe}
                         onRecipesChangeTop={this.handleRecipesChangeCreate}/>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
               <Button theme='danger' className='ml-1' onClick={ () => { this.toggleNewModal() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
+              </Button>
+              <Button theme='info' className='ml-1' onClick={ () => { this.scrapeRecipeChild() } }>
+                Scrape
+                <FontAwesomeIcon className='ml-1' icon={faCaravan} />
               </Button>
               <Button theme='secondary' className='ml-1' onClick={ () => this.createRecipeChild() }>
                 <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
