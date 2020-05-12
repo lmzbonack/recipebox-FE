@@ -40,6 +40,7 @@ export default class ScrapingManifestForm extends React.Component {
         instructions_path: null
       }
     }
+    this.convertBlankStringToNull = this.convertBlankStringToNull.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.submitCreatedSmanifest = this.submitCreatedSmanifest.bind(this)
     this.submitEditedSmanifest = this.submitEditedSmanifest.bind(this)
@@ -54,6 +55,10 @@ export default class ScrapingManifestForm extends React.Component {
     if (this.props.mode === 'create') this.props.setCreateSmanifest(this.submitCreatedSmanifest)
   }
 
+  convertBlankStringToNull(val) {
+    return (val === '' ? null : val)
+  }
+
   handleInputChange(event) {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -64,17 +69,24 @@ export default class ScrapingManifestForm extends React.Component {
   }
 
   async submitCreatedSmanifest() {
-    let aggregatedPrepTime = [this.state.prep_time_path, this.state.prep_time_path_units]
-    let aggregatedCookTime = [this.state.cook_time_path, this.state.cook_time_path_units]
+    // Do not submit null paths
+    let aggregatedPrepTime = []
+    let aggregatedCookTime = []
+    if (this.state.prep_time_path !== null && this.state.prep_time_path !== '') aggregatedPrepTime.push(this.state.prep_time_path)
+    if (this.state.prep_time_path_units !== null && this.state.prep_time_path_units !== '') aggregatedPrepTime.push(this.state.prep_time_path_units)
+    if (this.state.cook_time_path !== null && this.state.cook_time_path !== '') aggregatedCookTime.push(this.state.cook_time_path)
+    if (this.state.cook_time_path_units !== null && this.state.cook_time_path_units !== '') aggregatedCookTime.push(this.state.cook_time_path_units)
+
     const payload = {
-      domain: this.state.domain,
-      name_path:this.state.name_path,
-      author_path: this.state.author_path,
+      domain: this.convertBlankStringToNull(this.state.domain),
+      name_path: this.convertBlankStringToNull(this.state.name_path),
+      author_path: this.convertBlankStringToNull(this.state.author_path),
       prep_time_path: aggregatedPrepTime,
       cook_time_path: aggregatedCookTime,
-      ingredients_path: this.state.ingredients_path,
-      instructions_path: this.state.instructions_path,
+      ingredients_path: this.convertBlankStringToNull(this.state.ingredients_path),
+      instructions_path: this.convertBlankStringToNull(this.state.instructions_path),
     }
+
     try {
       let newSmanifestResponse = await ScrapingManifestService.create(payload)
       if(newSmanifestResponse.status === 201){
@@ -89,17 +101,23 @@ export default class ScrapingManifestForm extends React.Component {
   }
 
   async submitEditedSmanifest() {
-    let aggregatedPrepTime = [this.state.prep_time_path, this.state.prep_time_path_units]
-    let aggregatedCookTime = [this.state.cook_time_path, this.state.cook_time_path_units]
+    let aggregatedPrepTime = []
+    let aggregatedCookTime = []
+    if (this.state.prep_time_path !== null && this.state.prep_time_path !== '') aggregatedPrepTime.push(this.state.prep_time_path)
+    if (this.state.prep_time_path_units !== null && this.state.prep_time_path_units !== '') aggregatedPrepTime.push(this.state.prep_time_path_units)
+    if (this.state.cook_time_path !== null && this.state.cook_time_path !== '') aggregatedCookTime.push(this.state.cook_time_path)
+    if (this.state.cook_time_path_units !== null && this.state.cook_time_path_units !== '') aggregatedCookTime.push(this.state.cook_time_path_units)
+
     const payload = {
-      domain: this.state.domain,
-      name_path:this.state.name_path,
-      author_path: this.state.author_path,
+      domain: this.convertBlankStringToNull(this.state.domain),
+      name_path: this.convertBlankStringToNull(this.state.name_path),
+      author_path: this.convertBlankStringToNull(this.state.author_path),
       prep_time_path: aggregatedPrepTime,
       cook_time_path: aggregatedCookTime,
-      ingredients_path: this.state.ingredients_path,
-      instructions_path: this.state.instructions_path,
+      ingredients_path: this.convertBlankStringToNull(this.state.ingredients_path),
+      instructions_path: this.convertBlankStringToNull(this.state.instructions_path),
     }
+
     try {
       let editSmanifestResponse = await ScrapingManifestService.update(this.state.id, payload)
       if(editSmanifestResponse.status === 200){

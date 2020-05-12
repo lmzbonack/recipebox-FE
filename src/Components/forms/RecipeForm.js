@@ -6,6 +6,7 @@ import { Button,
          Form,
          FormInput,
          FormTextarea,
+         FormSelect,
          FormGroup,
          ListGroup } from "shards-react"
 
@@ -13,6 +14,7 @@ import { faArrowDown, faArrowUp, faPlus } from "@fortawesome/free-solid-svg-icon
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import RecipeService from '../../store/services/RecipeService'
+import ScrapingManifestService from '../../store/services/ScrapingManifestService'
 
 export default class RecipeForm extends React.Component {
   constructor(props){
@@ -30,7 +32,9 @@ export default class RecipeForm extends React.Component {
         ingredients: this.props.recipe.ingredients,
         instructions: this.props.recipe.instructions,
         prep_time: this.props.recipe.prep_time,
+        prep_time_units: this.props.recipe.prep_time_units,
         cook_time: this.props.recipe.cook_time,
+        cook_time_units: this.props.recipe.cook_time_units,
         external_link: this.props.recipe.external_link,
       }
     } else {
@@ -46,12 +50,15 @@ export default class RecipeForm extends React.Component {
           ingredients: [],
           instructions: [],
           prep_time: null,
+          prep_time_units: null,
           cook_time: null,
+          cook_time_units: null,
         }
       }
 
     this.addIngredient = this.addIngredient.bind(this)
     this.addInstruction = this.addInstruction.bind(this)
+    this.convertBlankStringToNull = this.convertBlankStringToNull.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleInputChangeIngredients = this.handleInputChangeIngredients.bind(this)
     this.handleInputChangeInstructions = this.handleInputChangeInstructions.bind(this)
@@ -59,7 +66,17 @@ export default class RecipeForm extends React.Component {
     this.toggleIngredients = this.toggleIngredients.bind(this)
     this.submitEditedRecipe = this.submitEditedRecipe.bind(this)
     this.submitCreatedRecipe = this.submitCreatedRecipe.bind(this)
+    this.scrapeNewRecipe = this.scrapeNewRecipe.bind(this)
     this.deleteRecipe = this.deleteRecipe.bind(this)
+    this.unitsConverter = this.unitsConverter.bind(this)
+  }
+
+  unitsConverter(val) {
+    return (val.toLowerCase().charAt(0) === 'm' ? 'minutes' : 'hours')
+  }
+
+  convertBlankStringToNull(val) {
+    return (val === '' ? null : val)
   }
 
   componentDidMount() {
@@ -67,7 +84,10 @@ export default class RecipeForm extends React.Component {
       this.props.setRecipeEdit(this.submitEditedRecipe)
       this.props.setRecipeDelete(this.deleteRecipe)
     }
-    if (this.props.mode === 'create') this.props.setCreateRecipe(this.submitCreatedRecipe);
+    if (this.props.mode === 'create') {
+      this.props.setCreateRecipe(this.submitCreatedRecipe);
+      this.props.setScrapeRecipe(this.scrapeNewRecipe)
+    }
     this.setState( (state, props) => ({
       collapseInstructions: state.collapseInstructions,
       collapseIngredients: state.collapseIngredients
@@ -88,8 +108,10 @@ export default class RecipeForm extends React.Component {
       author: this.state.author,
       ingredients: filteredIngredients,
       instructions: filteredInstructions,
-      prep_time: this.state.prep_time,
-      cook_time: this.state.cook_time,
+      prep_time: this.convertBlankStringToNull(this.state.prep_time),
+      prep_time_units: this.convertBlankStringToNull(this.state.prep_time_units),
+      cook_time: this.convertBlankStringToNull(this.state.cook_time),
+      cook_time_units: this.convertBlankStringToNull(this.state.cook_time_units),
       external_link: this.state.external_link,
     }
     try {
@@ -120,7 +142,9 @@ export default class RecipeForm extends React.Component {
       ingredients: filteredIngredients,
       instructions: filteredInstructions,
       prep_time: this.state.prep_time,
+      prep_time_units: this.state.prep_time_units,
       cook_time: this.state.cook_time,
+      cook_time_units: this.state.cook_time_units,
       external_link: this.state.external_link,
     }
     try {
@@ -148,6 +172,50 @@ export default class RecipeForm extends React.Component {
     } catch (error) {
       console.error(error)
     }
+  }
+
+  async scrapeNewRecipe() {
+    const payload = {
+      url: this.state.external_link
+    }
+    let scrapingResults = await ScrapingManifestService.scrape(payload)
+    console.log(scrapingResults)
+
+    let cookTimeLocal = null
+    let calculatedCookTimeUnits = null
+    let prepTimeLocal = null
+    let calculatedPrepTimeUnits = null
+
+    // Check for each expected result and if they exists update the state with them if they do not. Send nothing to state
+    if (scrapingResults.data.cook_time != null) {
+      if (scrapingResults.data.cook_time.unit) {
+        calculatedCookTimeUnits = this.unitsConverter(scrapingResults.data.cook_time.unit)
+      }
+      if (scrapingResults.data.cook_time.value) {
+        cookTimeLocal = scrapingResults.data.cook_time.value
+      }
+    }
+
+    // Check for each expected result and if they exists update the state with them if they do not. Send nothing to state
+    if (scrapingResults.data.prep_time != null) {
+      if (scrapingResults.data.prep_time.unit) {
+        calculatedPrepTimeUnits = this.unitsConverter(scrapingResults.data.prep_time.unit)
+      }
+      if (scrapingResults.data.prep_time.value) {
+        prepTimeLocal = scrapingResults.data.prep_time.value
+      }
+    }
+
+    this.setState({
+      name: scrapingResults.data.name,
+      author: scrapingResults.data.author,
+      ingredients: scrapingResults.data.ingredients,
+      instructions: scrapingResults.data.instructions,
+      prep_time: prepTimeLocal,
+      prep_time_units: calculatedPrepTimeUnits,
+      cook_time: cookTimeLocal,
+      cook_time_units: calculatedCookTimeUnits
+    })
   }
 
   toggleInstructions() {
@@ -246,18 +314,44 @@ export default class RecipeForm extends React.Component {
           <FormGroup className="col">
             <label htmlFor="#prepTime">Prep Time</label>
             <FormInput name="prep_time"
-                      id="#prepTime"
-                      placeholder="Prep Time"
-                      value={this.state.prep_time || ''}
-                      onChange={this.handleInputChange}/>
+                       id="#prepTime"
+                       placeholder="Prep Time"
+                       value={this.state.prep_time || ''}
+                       onChange={this.handleInputChange}/>
           </FormGroup>
+          <FormGroup className="col">
+            <label htmlFor="#prepTimeUnits">Prep Time Units</label>
+            <FormSelect name="prep_time_units"
+                        size='sm'
+                        id='#prepTimeUnits'
+                        value={this.state.prep_time_units || ''}
+                        onChange={this.handleInputChange}>
+              <option value="">N/A</option>
+              <option value="hours">Hours</option>
+              <option value="minutes">Minutes</option>
+            </FormSelect>
+          </FormGroup>
+        </div>
+        <div className="form-row">
           <FormGroup className="col">
             <label htmlFor="#cookTime">Cook Time</label>
             <FormInput name="cook_time"
-                      id="#cookTime"
-                      placeholder="Cook Time"
-                      value={this.state.cook_time || ''}
-                      onChange={this.handleInputChange}/>
+                       id="#cookTime"
+                       placeholder="Cook Time"
+                       value={this.state.cook_time || ''}
+                       onChange={this.handleInputChange}/>
+          </FormGroup>
+          <FormGroup className="col">
+            <label htmlFor="#cookTimeUnits">Cook Time Units</label>
+            <FormSelect name="cook_time_units"
+                        size='sm'
+                        id='#cookTimeUnits'
+                        value={this.state.cook_time_units || ''}
+                        onChange={this.handleInputChange}>
+              <option value="">N/A</option>
+              <option value="hours">Hours</option>
+              <option value="minutes">Minutes</option>
+            </FormSelect>
           </FormGroup>
         </div>
         <FormGroup>
