@@ -13,7 +13,6 @@ export default class ScrapingManifestForm extends React.Component {
     super(props)
     if (props.mode === 'edit') {
       this.state = {
-        error: '',
         id: this.props.smanifest._id.$oid,
         domain: this.props.smanifest.domain,
         name_path: this.props.smanifest.name_path,
@@ -27,7 +26,6 @@ export default class ScrapingManifestForm extends React.Component {
       }
     } else {
       this.state = {
-        error: '',
         id: null,
         domain: null,
         name_path: null,
@@ -93,10 +91,11 @@ export default class ScrapingManifestForm extends React.Component {
         const payload = {
           id: this.props.id
         }
+        this.props.relayToast("success", "Scraping manifest created")
         this.props.onSmanifestChangeTop(payload)
       }
     } catch (error) {
-      console.error(error)
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 
@@ -124,10 +123,11 @@ export default class ScrapingManifestForm extends React.Component {
         const payload = {
           id: this.props.id
         }
+        this.props.relayToast("success", "Scraping manifest edited")
         this.props.onSmanifestChangeTop(payload)
       }
     } catch (error) {
-      console.error(error)
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 
@@ -138,10 +138,11 @@ export default class ScrapingManifestForm extends React.Component {
         const payload = {
           id: this.props.id
         }
+        this.props.relayToast("success", "Scraping manifest deleted")
         this.props.onSmanifestChangeTop(payload)
       }
     } catch (error) {
-      console.error(error)
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 

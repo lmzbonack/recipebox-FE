@@ -1,4 +1,6 @@
 import React from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Button,
          ButtonGroup,
@@ -39,9 +41,9 @@ export default class CreatedRecipes extends React.Component {
         lengthRenderer: LengthRenderer,
       },
       createdRecipes: null,
-      userData: null,
-      error: ''
+      userData: null
     }
+    this.displayToastNotification = this.displayToastNotification.bind(this)
     this.retrieveCreatedRecipes = this.retrieveCreatedRecipes.bind(this)
     this.editRecipe = this.editRecipe.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
@@ -57,15 +59,11 @@ export default class CreatedRecipes extends React.Component {
       if (createdRecipesResponse.status === 200) {
         this.setState({
           createdRecipes: createdRecipesResponse.data,
-          error: ''
         })
       }
     } catch (error) {
-        console.error(error)
-        this.setState({
-          error: error.response.data.message
-        })
-      }
+      toast.error(error.response.data.message)
+    }
   }
 
   async retrieveUserDetails() {
@@ -74,14 +72,10 @@ export default class CreatedRecipes extends React.Component {
       if (userDetailsReponse) {
         this.setState({
           userData: userDetailsReponse.data,
-          error: ''
         })
       }
     } catch (error) {
-      console.error(error)
-      this.setState({
-        error: error.recipes.data.message
-      })
+      toast.error(error.response.data.message)
     }
   }
 
@@ -93,6 +87,14 @@ export default class CreatedRecipes extends React.Component {
   handleRecipesChangeCreate() {
     this.retrieveCreatedRecipes()
     this.toggleNewModal()
+  }
+
+  displayToastNotification(type, message) {
+    if (type === "error") toast.error(message)
+    else if (type === "success") toast.success(message)
+    else {
+      console.error('Umm we cannot send that message')
+    }
   }
 
   editRecipe(event) {
@@ -158,7 +160,8 @@ export default class CreatedRecipes extends React.Component {
             <RecipeForm mode='create'
                         setCreateRecipe={createRecipe => this.createRecipeChild = createRecipe}
                         setScrapeRecipe={scrapeRecipe => this.scrapeRecipeChild = scrapeRecipe}
-                        onRecipesChangeTop={this.handleRecipesChangeCreate}/>
+                        onRecipesChangeTop={this.handleRecipesChangeCreate}
+                        relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
@@ -190,7 +193,8 @@ export default class CreatedRecipes extends React.Component {
                         recipe={this.state.activeRecipe}
                         setRecipeEdit={recipeEdit => this.recipeEditChild = recipeEdit}
                         setRecipeDelete={recipeDelete => this.recipeDeleteChild = recipeDelete}
-                        onRecipesChangeTop={this.handleRecipesChangeEdit}/>
+                        onRecipesChangeTop={this.handleRecipesChangeEdit}
+                        relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
@@ -216,6 +220,7 @@ export default class CreatedRecipes extends React.Component {
           onFirstDataRendered={this.onFirstDataRendered.bind(this)}
           frameworkComponents={this.state.frameworkComponents}
         />
+        <ToastContainer/>
       </Container>
     )
   }

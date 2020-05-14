@@ -1,4 +1,7 @@
 import React from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { Button,
          ButtonGroup,
          Container,
@@ -43,6 +46,15 @@ export default class Recipes extends React.Component {
     this.closeModal = this.closeModal.bind(this)
     this.viewRecipeDetails = this.viewRecipeDetails.bind(this)
     this.handleRecipeStar = this.handleRecipeStar.bind(this)
+    this.displayToastNotification = this.displayToastNotification.bind(this)
+  }
+
+  displayToastNotification(type, message) {
+    if (type === "error") toast.error(message)
+    else if (type === "success") toast.success(message)
+    else {
+      console.error('Umm we cannot send that message')
+    }
   }
 
   toggleModal() {
@@ -136,7 +148,8 @@ export default class Recipes extends React.Component {
             <RecipeContent recipe={this.state.activeRecipe}
                            mode = 'star'
                            setStarRecipe={starRecipe => this.starRecipeChild = starRecipe}
-                           onRecipesStarredTop={this.handleRecipeStar}/>
+                           onRecipesStarredTop={this.handleRecipeStar}
+                           relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
@@ -158,6 +171,7 @@ export default class Recipes extends React.Component {
           onFirstDataRendered={this.onFirstDataRendered.bind(this)}
           frameworkComponents={this.state.frameworkComponents}
         />
+        <ToastContainer/>
       </Container>
     )
   }

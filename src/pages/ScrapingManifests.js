@@ -1,4 +1,6 @@
 import React from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Button,
          ButtonGroup,
@@ -20,7 +22,6 @@ import UserService from '../store/services/UserService'
 import ScrapingManifestForm from '../Components/forms/ScrapingManifestForm'
 
 
-
 export default class ScrapingManifests extends React.Component {
   constructor(props) {
     super(props)
@@ -34,14 +35,22 @@ export default class ScrapingManifests extends React.Component {
         {headerName: 'Domain', field: 'domain', sortable: true, filter: true, resizable: true},
       ],
       createdManifests: null,
-      error: ''
     }
+    this.displayToastNotification = this.displayToastNotification.bind(this)
     this.toggleNewModal = this.toggleNewModal.bind(this)
     this.toggleEditModal = this.toggleEditModal.bind(this)
     this.viewSmanifestDetails = this.viewSmanifestDetails.bind(this)
     this.retrieveCreatedManifests = this.retrieveCreatedManifests.bind(this)
     this.handleSmanifestChangeCreate = this.handleSmanifestChangeCreate.bind(this)
     this.handleSmanifestChangeEdit = this.handleSmanifestChangeEdit.bind(this)
+  }
+
+  displayToastNotification(type, message) {
+    if (type === "error") toast.error(message)
+    else if (type === "success") toast.success(message)
+    else {
+      console.error('Umm we cannot send that message')
+    }
   }
 
   async componentDidMount() {
@@ -55,15 +64,11 @@ export default class ScrapingManifests extends React.Component {
         // console.log(createdManifestsResponse.data)
         this.setState({
           createdManifests: createdManifestsResponse.data,
-          error: ''
         })
       }
     } catch (error) {
-        console.error(error)
-        this.setState({
-          error: error.response.data.message
-        })
-      }
+        toast.error(error.response.data.message)
+    }
   }
 
   viewSmanifestDetails(event) {
@@ -126,7 +131,8 @@ export default class ScrapingManifests extends React.Component {
               }}>
             <ScrapingManifestForm mode='create'
                                   setCreateSmanifest={createSmanifest => this.createSmanifestChild = createSmanifest}
-                                  onSmanifestChangeTop={this.handleSmanifestChangeCreate}/>
+                                  onSmanifestChangeTop={this.handleSmanifestChangeCreate}
+                                  relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
@@ -153,7 +159,8 @@ export default class ScrapingManifests extends React.Component {
                                   smanifest={this.state.activeManifest}
                                   setEditSmanifest={editSmanifest => this.editSmanifestChild = editSmanifest}
                                   setDeleteSmanifest={deleteSmanifest => this.deleteSmanifestChild = deleteSmanifest}
-                                  onSmanifestChangeTop={this.handleSmanifestChangeEdit}/>
+                                  onSmanifestChangeTop={this.handleSmanifestChangeEdit}
+                                  relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
@@ -179,6 +186,7 @@ export default class ScrapingManifests extends React.Component {
           onFirstDataRendered={this.onFirstDataRendered.bind(this)}
           frameworkComponents={this.state.frameworkComponents}
         />
+        <ToastContainer/>
       </Container>
     )
   }

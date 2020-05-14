@@ -1,4 +1,6 @@
 import React from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Button,
          ButtonGroup,
@@ -38,8 +40,8 @@ export default class StarredRecipes extends React.Component {
       starredRecipes: null,
       userData: null,
       activeRecipe: undefined,
-      error: ''
     }
+    this.displayToastNotification = this.displayToastNotification.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.viewRecipeDetails = this.viewRecipeDetails.bind(this)
@@ -51,6 +53,14 @@ export default class StarredRecipes extends React.Component {
     this.setState({
       open: !this.state.open,
     });
+  }
+
+  displayToastNotification(type, message) {
+    if (type === "error") toast.error(message)
+    else if (type === "success") toast.success(message)
+    else {
+      console.error('Umm we cannot send that message')
+    }
   }
 
   handleRecipeUnstar() {
@@ -78,14 +88,10 @@ export default class StarredRecipes extends React.Component {
       if (starredRecipesResponse.status === 200) {
         this.setState({
           starredRecipes: starredRecipesResponse.data,
-          error: ''
         })
       }
     } catch (error) {
-        console.error(error)
-        this.setState({
-          error: error.response.data.message
-        })
+        toast.error(error.response.data.message)
       }
   }
 
@@ -95,14 +101,10 @@ export default class StarredRecipes extends React.Component {
       if (userDetailsReponse) {
         this.setState({
           userData: userDetailsReponse.data,
-          error: ''
         })
       }
     } catch (error) {
-      console.error(error)
-      this.setState({
-        error: error.recipes.data.message
-      })
+        toast.error(error.response.data.message)
     }
   }
 
@@ -113,10 +115,11 @@ export default class StarredRecipes extends React.Component {
     try {
       let unStarRecipeResponse = await RecipeService.unStar(id)
       if (unStarRecipeResponse.status === 200) {
+        toast.success("Recipe Unstarred")
         this.retrieveStarredRecipes()
       }
     } catch (error) {
-      console.error(error)
+      toast.error(error.response.data.message)
     }
   }
 
@@ -156,7 +159,8 @@ export default class StarredRecipes extends React.Component {
             <RecipeContent recipe={this.state.activeRecipe}
                            mode = 'unstar'
                            setUnstarRecipe={unstarRecipe => this.unstarRecipeChild = unstarRecipe}
-                           onRecipesStarredTop={this.handleRecipeUnstar}/>
+                           onRecipesStarredTop={this.handleRecipeUnstar}
+                           relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
@@ -178,6 +182,7 @@ export default class StarredRecipes extends React.Component {
           onFirstDataRendered={this.onFirstDataRendered.bind(this)}
           frameworkComponents={this.state.frameworkComponents}
         />
+        <ToastContainer/>
       </Container>
     )
   }

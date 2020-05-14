@@ -1,9 +1,10 @@
 import React from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import UserService from '../store/services/UserService'
-// import ShoppingListService from '../store/services/ShoppingListService'
 import { Container } from 'shards-react'
 
+import UserService from '../store/services/UserService'
 import SingleShoppingList from '../Components/SingleShoppingList'
 
 export default class ShoppingList extends React.Component {
@@ -11,9 +12,9 @@ export default class ShoppingList extends React.Component {
     super(props)
     this.state = {
       shoppingLists: [],
-      error: ''
     }
     this.handleIngredientChangeTop = this.handleIngredientChangeTop.bind(this)
+    this.displayToastNotification = this.displayToastNotification.bind(this)
   }
 
   componentDidMount() {
@@ -26,23 +27,24 @@ export default class ShoppingList extends React.Component {
     this.retrieveShoppingLists()
   }
 
+  displayToastNotification(type, message) {
+    if (type === "error") toast.error(message)
+    else if (type === "success") toast.success(message)
+    else {
+      console.error('Umm we cannot send that message')
+    }
+  }
+
   async retrieveShoppingLists() {
     try {
       let shoppingListResponse = await UserService.fetchUserData('shopping-list')
       if (shoppingListResponse.status === 200) {
         this.setState({
           shoppingLists: shoppingListResponse.data,
-          error: ''
         })
       }
     } catch (error) {
-      if (error.response) {
-        this.setState({
-          error: error.response.data.message
-        })
-      } else {
-        console.error(error)
-      }
+        toast.error(error.response.data.message)
     }
   }
 
@@ -55,9 +57,11 @@ export default class ShoppingList extends React.Component {
                                 id={value._id.$oid}
                                 name={value.name}
                                 ingredients={value.ingredients}
-                                onIngredientChangeTop={this.handleIngredientChangeTop}/>
+                                onIngredientChangeTop={this.handleIngredientChangeTop}
+                                relayToast={this.displayToastNotification}/>
           )
           })}
+        <ToastContainer/>
       </Container>
     )
   }

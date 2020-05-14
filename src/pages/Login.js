@@ -1,7 +1,7 @@
 import React from 'react'
 import { navigate } from "@reach/router"
-
-import UserService from '../store/services/UserService'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
   Button,
@@ -11,15 +11,17 @@ import {
   FormGroup,
 } from 'shards-react'
 
+import UserService from '../store/services/UserService'
+
+
+
 export default class Login extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       email: '',
-      password: '',
-      error: ''
+      password: ''
     }
-
     this.handleInputChange = this.handleInputChange.bind(this);
     this.login = this.login.bind(this);
   }
@@ -62,18 +64,14 @@ export default class Login extends React.Component {
         navigate('/recipes')
       }
     } catch (error) {
-      console.error(error)
-      this.setState({
-        email: '',
-        password: '',
-        error: error.response.data.message
-      });
+      toast.error(error.response.data.message)
     }
   }
 
   render() {
     return(
-      <Container>
+      <Container className='mt-3'>
+        <h2>Welcome Back</h2>
         <Form>
           <FormGroup>
             <label htmlFor="#email">Email</label>
@@ -86,8 +84,9 @@ export default class Login extends React.Component {
         </Form>
         <Button outline
                 theme="success"
-                onClick={this.login}>Login</Button>
-        <p>{ this.state.error }</p>
+                onClick={this.login}>Login
+        </Button>
+        <ToastContainer />
       </Container>
     )
   }
