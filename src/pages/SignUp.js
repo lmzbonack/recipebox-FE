@@ -1,5 +1,7 @@
 import React from 'react'
 import { navigate } from "@reach/router"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import UserService from '../store/services/UserService'
 
@@ -17,9 +19,7 @@ export default class SignUp extends React.Component {
     this.state = {
       email: '',
       password: '',
-      error: ''
     }
-
     this.handleInputChange = this.handleInputChange.bind(this);
     this.signUp = this.signUp.bind(this);
   }
@@ -59,18 +59,14 @@ export default class SignUp extends React.Component {
         }
       }
     } catch (error) {
-      console.error(error)
-      this.setState({
-        email: '',
-        password: '',
-        error: error.response.data.message
-      });
+      toast.error(error.response.data.message)
     }
   }
 
   render() {
     return(
-      <Container>
+      <Container className='mt-3'>
+        <h2>Sign Up</h2>
         <Form>
           <FormGroup>
             <label htmlFor="#email">Email</label>
@@ -84,7 +80,7 @@ export default class SignUp extends React.Component {
         <Button outline
                 theme="success"
                 onClick={this.signUp}>Sign Up</Button>
-        <p>{ this.state.error }</p>
+        <ToastContainer />
       </Container>
     )
   }

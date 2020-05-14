@@ -21,7 +21,6 @@ export default class RecipeForm extends React.Component {
     super(props)
     if (props.mode === 'edit') {
       this.state = {
-        error: '',
         newIngredient: '',
         newInstruction: '',
         collapseInstructions: false,
@@ -39,7 +38,6 @@ export default class RecipeForm extends React.Component {
       }
     } else {
         this.state = {
-          error: '',
           newIngredient: '',
           newInstruction: '',
           collapseInstructions: false,
@@ -120,10 +118,11 @@ export default class RecipeForm extends React.Component {
         const payload = {
           id: this.props.id
         }
+        this.props.relayToast("success", "Recipe Created")
         this.props.onRecipesChangeTop(payload)
       }
     } catch (error) {
-      console.error(error)
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 
@@ -153,10 +152,11 @@ export default class RecipeForm extends React.Component {
         const payload = {
           id: this.props.id
         }
+        this.props.relayToast("success", "Recipe Edited")
         this.props.onRecipesChangeTop(payload)
       }
     } catch (error) {
-      console.error(error)
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 
@@ -167,55 +167,60 @@ export default class RecipeForm extends React.Component {
         const payload = {
           id: this.props.id
         }
+        this.props.relayToast("success", "Recipe Deleted")
         this.props.onRecipesChangeTop(payload)
       }
     } catch (error) {
-      console.error(error)
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 
+  // TODO: wrap this is try catch block
   async scrapeNewRecipe() {
-    const payload = {
-      url: this.state.external_link
+    try {
+      const payload = {
+        url: this.state.external_link
+      }
+      let scrapingResults = await ScrapingManifestService.scrape(payload)
+
+      let cookTimeLocal = null
+      let calculatedCookTimeUnits = null
+      let prepTimeLocal = null
+      let calculatedPrepTimeUnits = null
+
+      // Check for each expected result and if they exists update the state with them if they do not. Send nothing to state
+      if (scrapingResults.data.cook_time != null) {
+        if (scrapingResults.data.cook_time.unit) {
+          calculatedCookTimeUnits = this.unitsConverter(scrapingResults.data.cook_time.unit)
+        }
+        if (scrapingResults.data.cook_time.value) {
+          cookTimeLocal = scrapingResults.data.cook_time.value
+        }
+      }
+
+      // Check for each expected result and if they exists update the state with them if they do not. Send nothing to state
+      if (scrapingResults.data.prep_time != null) {
+        if (scrapingResults.data.prep_time.unit) {
+          calculatedPrepTimeUnits = this.unitsConverter(scrapingResults.data.prep_time.unit)
+        }
+        if (scrapingResults.data.prep_time.value) {
+          prepTimeLocal = scrapingResults.data.prep_time.value
+        }
+      }
+
+      this.setState({
+        name: scrapingResults.data.name,
+        author: scrapingResults.data.author,
+        ingredients: scrapingResults.data.ingredients,
+        instructions: scrapingResults.data.instructions,
+        prep_time: prepTimeLocal,
+        prep_time_units: calculatedPrepTimeUnits,
+        cook_time: cookTimeLocal,
+        cook_time_units: calculatedCookTimeUnits
+      })
+    } catch(error) {
+      this.props.relayToast("error", error.response.data.message)
     }
-    let scrapingResults = await ScrapingManifestService.scrape(payload)
-    console.log(scrapingResults)
-
-    let cookTimeLocal = null
-    let calculatedCookTimeUnits = null
-    let prepTimeLocal = null
-    let calculatedPrepTimeUnits = null
-
-    // Check for each expected result and if they exists update the state with them if they do not. Send nothing to state
-    if (scrapingResults.data.cook_time != null) {
-      if (scrapingResults.data.cook_time.unit) {
-        calculatedCookTimeUnits = this.unitsConverter(scrapingResults.data.cook_time.unit)
-      }
-      if (scrapingResults.data.cook_time.value) {
-        cookTimeLocal = scrapingResults.data.cook_time.value
-      }
-    }
-
-    // Check for each expected result and if they exists update the state with them if they do not. Send nothing to state
-    if (scrapingResults.data.prep_time != null) {
-      if (scrapingResults.data.prep_time.unit) {
-        calculatedPrepTimeUnits = this.unitsConverter(scrapingResults.data.prep_time.unit)
-      }
-      if (scrapingResults.data.prep_time.value) {
-        prepTimeLocal = scrapingResults.data.prep_time.value
-      }
-    }
-
-    this.setState({
-      name: scrapingResults.data.name,
-      author: scrapingResults.data.author,
-      ingredients: scrapingResults.data.ingredients,
-      instructions: scrapingResults.data.instructions,
-      prep_time: prepTimeLocal,
-      prep_time_units: calculatedPrepTimeUnits,
-      cook_time: cookTimeLocal,
-      cook_time_units: calculatedCookTimeUnits
-    })
   }
 
   toggleInstructions() {
@@ -229,9 +234,7 @@ export default class RecipeForm extends React.Component {
   addIngredient() {
     let newIngredients = this.state.ingredients
     if(this.state.newIngredient.length === 0){
-      this.setState({
-        error: 'Cannot add blank ingredient'
-      })
+      this.props.relayToast("error", "Cannot add blank ingredient")
       return
     }
     newIngredients.unshift(this.state.newIngredient)
@@ -244,9 +247,7 @@ export default class RecipeForm extends React.Component {
   addInstruction() {
     let newInstructions = this.state.instructions
     if(this.state.newInstruction.length === 0){
-      this.setState({
-        error: 'Cannot add blank instruction'
-      })
+      this.props.relayToast("error", "Cannot add blank instruction")
       return
     }
     newInstructions.push(this.state.newInstruction)
@@ -400,6 +401,5 @@ export default class RecipeForm extends React.Component {
         </FormGroup>
       </Form>
     )
-
   }
 }

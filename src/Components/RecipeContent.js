@@ -20,10 +20,11 @@ export default class RecipeContent extends React.Component {
     try {
       let starRecipeResponse = await RecipeService.star(this.props.recipe._id.$oid)
       if (starRecipeResponse.status === 200) {
+        this.props.relayToast("success", "Recipe Starred")
         this.props.onRecipesStarredTop()
       }
     } catch (error) {
-      console.error(error)
+      this.props.relayToast("error", error.response.data)
     }
   }
 
@@ -31,10 +32,11 @@ export default class RecipeContent extends React.Component {
     try {
       let unStarRecipeResponse = await RecipeService.unStar(this.props.recipe._id.$oid)
       if (unStarRecipeResponse.status === 200) {
+        this.props.relayToast("success", "Recipe Unstarred")
         this.props.onRecipesStarredTop()
       }
     } catch (error) {
-      console.error(error)
+      this.props.relayToast("error", error.response.data)
     }
   }
 

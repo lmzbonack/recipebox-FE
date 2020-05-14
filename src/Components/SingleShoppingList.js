@@ -23,7 +23,6 @@ export default class SingleShoppingList extends React.Component {
       collapse: false,
       name: '',
       newIngredient: '',
-      error: ''
     }
     this.toggle = this.toggle.bind(this)
     this.handleIngredientDelete = this.handleIngredientDelete.bind(this)
@@ -58,9 +57,7 @@ export default class SingleShoppingList extends React.Component {
   async addIngredient() {
     let newIngredients = this.props.ingredients
     if (this.state.newIngredient.length === 0) {
-      this.setState({
-        error: 'Cannot add blank ingredient'
-      })
+      this.props.relayToast("error", "Cannot add blank ingredient")
       return
     }
     newIngredients.unshift(this.state.newIngredient)
@@ -80,7 +77,7 @@ export default class SingleShoppingList extends React.Component {
         })
       }
     } catch (error) {
-      console.error(error)
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 
@@ -98,8 +95,7 @@ export default class SingleShoppingList extends React.Component {
         this.props.onIngredientChangeTop(payload)
       }
     } catch (error) {
-      // Handle that error elegantly and pop it into state
-      console.error(error)
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 
@@ -110,11 +106,11 @@ export default class SingleShoppingList extends React.Component {
         const payload = {
           id: this.props.id
         }
+        this.props.relayToast("success", "Shopping list deleted")
         this.props.onIngredientChangeTop(payload)
       }
     } catch (error) {
-      // Handle that error elegantly and pop it into state
-      console.error(error)
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 
@@ -137,8 +133,7 @@ export default class SingleShoppingList extends React.Component {
         this.props.onIngredientChangeTop(payload)
       }
     } catch (error) {
-      // Handle that error elegantly and pop it into state
-      console.error(error)
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 
@@ -160,8 +155,8 @@ export default class SingleShoppingList extends React.Component {
         this.props.onIngredientChangeTop(parentsPayload)
       }
     } catch (error) {
-      // Handle that error elegantly and pop it into state
-      console.error(error)
+      this.props.relayToast("error", "Error encountered while trying to update shopping list ingredient")
+
     }
   }
 
@@ -192,7 +187,6 @@ export default class SingleShoppingList extends React.Component {
                 <FontAwesomeIcon className='ml-1' icon={faPlus} />
               </Button>
             </InputGroup>
-            <p>{ this.state.error }</p>
           </FormGroup>
         }
         <Collapse open={ this.state.collapse }>
