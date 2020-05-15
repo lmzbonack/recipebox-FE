@@ -1,8 +1,6 @@
 import React from 'react'
 
-import { Button,
-         InputGroup,
-         Form,
+import { Form,
          FormInput,
          FormGroup } from 'shards-react'
 

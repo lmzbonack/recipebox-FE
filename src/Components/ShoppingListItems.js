@@ -1,9 +1,18 @@
 import React from 'react'
 
-import { ListGroup, ListGroupItem, Container } from "shards-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
-import { Button, ButtonGroup, Modal, ModalBody, ModalHeader, Form, FormInput, FormGroup  } from 'shards-react'
+import { Button,
+         ButtonGroup,
+         Modal,
+         ModalBody,
+         ModalHeader,
+         Form,
+         FormInput,
+         FormGroup,
+         ListGroup,
+         ListGroupItem,
+         Container } from "shards-react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTimes, faPencilAlt } from "@fortawesome/free-solid-svg-icons"
 
 import ConfirmDelete from './ConfirmDelete'
 

@@ -11,7 +11,7 @@ import { Button,
          ModalFooter } from 'shards-react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes, faPencilAlt, faPlus, faTrash, faCaravan } from "@fortawesome/free-solid-svg-icons"
+import { faListAlt, faTimes, faPencilAlt, faPlus, faTrash, faCaravan } from "@fortawesome/free-solid-svg-icons"
 
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -21,6 +21,7 @@ import LengthRenderer from '../Components/renderers/LengthRenderer'
 import UserService from '../store/services/UserService'
 import RecipeForm from '../Components/forms/RecipeForm'
 import DynamicModalHeader from '../Components/DynamicModalHeader'
+import AdderModal from '../Components/AdderModal'
 
 export default class CreatedRecipes extends React.Component {
   constructor(props) {
@@ -107,7 +108,7 @@ export default class CreatedRecipes extends React.Component {
   toggleModal() {
     this.setState({
       open: !this.state.open,
-    });
+    })
   }
 
   toggleNewModal() {
@@ -204,10 +205,16 @@ export default class CreatedRecipes extends React.Component {
               <Button theme='warning' className='ml-1' onClick={ () => { this.toggleModal() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
               </Button>
+              <Button theme='info' className='ml-1' onClick={ () => { this.togglePopoverChild() } }>
+                  <FontAwesomeIcon className='ml-1' icon={faListAlt} />
+              </Button>
               <Button theme='secondary' className='ml-1' onClick={ () => this.recipeEditChild() }>
                 <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
               </Button>
             </ButtonGroup>
+            <AdderModal recipe={this.state.activeRecipe}
+                        setTogglePopover={togglePopover => this.togglePopoverChild = togglePopover}
+                        relayToast={this.displayToastNotification}/>
           </ModalFooter>
         </Modal>
 

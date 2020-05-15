@@ -15,12 +15,13 @@ import RecipeService from '../store/services/RecipeService'
 import UserService from '../store/services/UserService'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes, faStar } from "@fortawesome/free-solid-svg-icons"
+import { faTimes, faStar, faListAlt } from "@fortawesome/free-solid-svg-icons"
 
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-balham.css'
 import LengthRenderer from '../Components/renderers/LengthRenderer'
+import AdderModal from '../Components/AdderModal';
 
 export default class Recipes extends React.Component {
   constructor(props) {
@@ -91,10 +92,7 @@ export default class Recipes extends React.Component {
         })
       }
     } catch (error) {
-      console.error(error)
-      this.setState({
-        error: error.recipes.data.message
-      })
+      toast.error(error.response.data.message)
     }
   }
 
@@ -108,10 +106,7 @@ export default class Recipes extends React.Component {
         })
       }
     } catch (error) {
-      console.error(error)
-      this.setState({
-        error: error.recipes.data.message
-      })
+      toast.error(error.response.data.message)
     }
   }
 
@@ -134,7 +129,7 @@ export default class Recipes extends React.Component {
     return (
       <Container className='mt-3 ag-theme-balham w-100'
                  style={{
-                  "height": 600
+                  "height": "90vh"
                  }}>
         <Modal size="lg h-100"
                open={open}
@@ -156,10 +151,16 @@ export default class Recipes extends React.Component {
                 <Button theme='danger' className='ml-1' onClick={ () => { this.toggleModal() } }>
                   <FontAwesomeIcon className='ml-1' icon={faTimes} />
                 </Button>
+                <Button theme='info' className='ml-1' onClick={ () => { this.togglePopoverChild() } }>
+                  <FontAwesomeIcon className='ml-1' icon={faListAlt} />
+                </Button>
                 <Button theme='secondary' className='ml-1' onClick={ () => this.starRecipeChild() }>
                   <FontAwesomeIcon className='ml-1' icon={faStar} />
                 </Button>
               </ButtonGroup>
+              <AdderModal recipe={this.state.activeRecipe}
+                          setTogglePopover={togglePopover => this.togglePopoverChild = togglePopover}
+                          relayToast={this.displayToastNotification}/>
           </ModalFooter>
         </Modal>
         <AgGridReact
