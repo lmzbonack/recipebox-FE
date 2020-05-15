@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import ConfirmDelete from './ConfirmDelete'
 import ShoppingListItems from './ShoppingListItems'
+import ShoppingListRecipes from './ShoppingListRecipes'
 
 import ShoppingListService from '../store/services/ShoppingListService'
 
@@ -25,6 +26,7 @@ export default class SingleShoppingList extends React.Component {
       newIngredient: '',
     }
     this.toggle = this.toggle.bind(this)
+    this.handleRecipeDelete = this.handleRecipeDelete.bind(this)
     this.handleIngredientDelete = this.handleIngredientDelete.bind(this)
     this.handleIngredientUpdate = this.handleIngredientUpdate.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -155,8 +157,25 @@ export default class SingleShoppingList extends React.Component {
         this.props.onIngredientChangeTop(parentsPayload)
       }
     } catch (error) {
-      this.props.relayToast("error", "Error encountered while trying to update shopping list ingredient")
+      this.props.relayToast("error", error.response.data.message)
+    }
+  }
 
+  async handleRecipeDelete(payload) {
+    const requestPayload = {
+      recipe_id: payload.id
+    }
+    console.log(requestPayload)
+    try {
+      let updatedList = await ShoppingListService.deleteSingleRecipe(this.props.id, requestPayload)
+      if (updatedList.status === 200) {
+        const parentsPayload = {
+          id: this.props.id
+        }
+        this.props.onIngredientChangeTop(parentsPayload)
+      }
+    } catch(error) {
+      this.props.relayToast("error", error.response.data.message)
     }
   }
 
@@ -181,6 +200,11 @@ export default class SingleShoppingList extends React.Component {
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
               </Button>
             </InputGroup>
+            <h6>Recipes</h6>
+            <ShoppingListRecipes addedRecipes={this.props.addedRecipes}
+                                 onRecipeDelete={this.handleRecipeDelete}
+                                 relayToast={this.props.relayToast}/>
+            <h6>Ingredients</h6>
             <InputGroup className='w-50'>
               <FormInput placeholder= 'add ingredient' name='newIngredient' value={this.state.newIngredient} onChange={this.handleInputChange}/>
               <Button className='ml-1' theme="success" onClick={ () => { this.addIngredient() } }>

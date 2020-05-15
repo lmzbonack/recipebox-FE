@@ -344,7 +344,7 @@ export default class RecipeForm extends React.Component {
           </FormGroup>
           <FormGroup className="col">
             <label htmlFor="#cookTimeUnits">Cook Time Units</label>
-            <FormSelect name="cook_time_units"
+            <FormSelect name='cook_time_units'
                         size='sm'
                         id='#cookTimeUnits'
                         value={this.state.cook_time_units || ''}
