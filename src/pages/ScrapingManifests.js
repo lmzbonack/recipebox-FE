@@ -59,7 +59,7 @@ export default class ScrapingManifests extends React.Component {
 
   async retrieveCreatedManifests() {
     try {
-      let createdManifestsResponse = await UserService.fetchUserData('created-manifests')
+      let createdManifestsResponse = await UserService.fetchUserData('created-manifests', 1)
       if (createdManifestsResponse.status === 200) {
         // console.log(createdManifestsResponse.data)
         this.setState({

@@ -98,13 +98,14 @@ export default class Recipes extends React.Component {
 
   async retrieveRecipes() {
     try {
-      let recipesResponse = await RecipeService.fetchAll()
+      let recipesResponse = await RecipeService.fetchAll(1)
       if (recipesResponse.status === 200) {
         this.setState({
           recipes: recipesResponse.data,
           error: ''
         })
       }
+      console.log(this.state)
     } catch (error) {
       toast.error(error.response.data.message)
     }

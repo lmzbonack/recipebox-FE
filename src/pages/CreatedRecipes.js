@@ -56,7 +56,7 @@ export default class CreatedRecipes extends React.Component {
 
   async retrieveCreatedRecipes() {
     try {
-      let createdRecipesResponse = await UserService.fetchUserData('created-recipes')
+      let createdRecipesResponse = await UserService.fetchUserData('created-recipes', 1)
       if (createdRecipesResponse.status === 200) {
         this.setState({
           createdRecipes: createdRecipesResponse.data,
