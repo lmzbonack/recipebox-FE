@@ -42,13 +42,13 @@ export default {
   /**
    * Retrieves all recipes
    */
-  async fetchAll() {
+  async fetchAll(page) {
     let token = await utils.retrieveAuthToken()
     if (token) {
       const config = {
         headers: { Authorization: `Bearer ${token}` }
       }
-      return axios.get(`${process.env.REACT_APP_API_URL}/recipes`, config)
+      return axios.get(`${process.env.REACT_APP_API_URL}/recipes?page=${page}`, config)
     } else {
       navigate('/login')
       return 'No Token'

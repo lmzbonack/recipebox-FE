@@ -41,13 +41,18 @@ export default {
    * @param {string} dataPiece the route name for the piece of data
    * being retrieved EG. 'shopping-list' 'starred-recipes'
    */
-  async fetchUserData(dataPiece) {
+  async fetchUserData(dataPiece, page) {
     let token = await utils.retrieveAuthToken()
     if (token) {
       const config = {
         headers: { Authorization: `Bearer ${token}` }
       }
-      return axios.get(`${process.env.REACT_APP_API_URL}/user/${dataPiece}`, config)
+      // if pass in page call it with page
+      if (page) {
+        return axios.get(`${process.env.REACT_APP_API_URL}/user/${dataPiece}?page=${page}`, config)
+      } else {
+        return axios.get(`${process.env.REACT_APP_API_URL}/user/${dataPiece}`, config)
+      }
     } else {
       navigate('/login')
       return 'No Token'
