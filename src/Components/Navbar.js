@@ -8,6 +8,7 @@ import {
   Nav,
   NavItem,
   NavLink,
+  Button,
   Dropdown,
   DropdownToggle,
   DropdownMenu,
@@ -59,6 +60,7 @@ export default class NavExample extends React.Component {
   }
 
   render() {
+    let isloggedIn = localStorage.getItem('authToken')
     return (
       <Navbar theme="light" expand="md">
         <NavbarBrand href="/recipes">Recipe Box</NavbarBrand>
@@ -85,7 +87,7 @@ export default class NavExample extends React.Component {
                 Profile
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem href='/shopping-list'>Shopping List</DropdownItem>
+                <DropdownItem href='/shopping-list'>Shopping Lists</DropdownItem>
                 <DropdownItem href='/created-recipes'>Created Recipes</DropdownItem>
                 <DropdownItem href='/starred-recipes'>Starred Recipes</DropdownItem>
                 <DropdownItem href='/created-manifests'>Scraping Manifests</DropdownItem>
@@ -94,16 +96,27 @@ export default class NavExample extends React.Component {
           </Nav>
 
           <Nav navbar className="ml-auto">
+            {isloggedIn === null &&
             <NavItem>
               <NavLink href="/login">
                 Login
               </NavLink>
             </NavItem>
+            }
+            {isloggedIn !== null &&
+            <NavItem>
+              <NavLink href="/login" onClick={() => {localStorage.removeItem('authToken')}}>
+                Logout
+              </NavLink>
+            </NavItem>
+            }
+            {isloggedIn === null &&
             <NavItem>
               <NavLink href="/signup">
                 Sign Up
               </NavLink>
             </NavItem>
+            }
           </Nav>
         </Collapse>
       </Navbar>
