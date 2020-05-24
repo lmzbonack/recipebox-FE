@@ -164,7 +164,7 @@ export default class ScrapingManifests extends React.Component {
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
-              <Button theme='danger' className='ml-1' onClick={ () => { this.deleteSmanifestChild() } }>
+              <Button id='deleteSmanifestButton' theme='danger' className='ml-1' onClick={ () => { this.deleteSmanifestChild() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTrash} />
               </Button>
               <Button theme='warning' className='ml-1' onClick={ () => { this.toggleEditModal() } }>

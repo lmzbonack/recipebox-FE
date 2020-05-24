@@ -45,12 +45,12 @@ export default class AdderPopover extends React.Component {
     }
     try {
       let shoppingListAdderResponse = await ShoppingListService.updateWithRecipe(this.state.shoppingListSelection, payload)
-      if(shoppingListAdderResponse.status === 200){
+      if (shoppingListAdderResponse.status === 200) {
         this.props.relayToast("success", "Recipe Added")
         this.toggle()
       }
     } catch (error) {
-      this.props.relayToast("error", error.response.data.message)
+      this.props.relayToast("error", error.response.data)
     }
   }
 
@@ -66,7 +66,8 @@ export default class AdderPopover extends React.Component {
           }
           listOptions.push(payload)
           this.setState({
-            shoppingListOptions: listOptions
+            shoppingListOptions: listOptions,
+            shoppingListSelection: listOptions[0].id
           })
         });
       }
@@ -94,11 +95,9 @@ export default class AdderPopover extends React.Component {
         }, this)
     return (
       <div>
-        <Modal
-          placement="bottom"
-          open={open}
-          toggle={this.toggle}
-        >
+        <Modal placement="bottom"
+               open={open}
+               toggle={this.toggle}>
           <ModalHeader>Add {this.props.recipe.name} to shopping list</ModalHeader>
           <ModalBody>
             <FormGroup>
@@ -106,7 +105,7 @@ export default class AdderPopover extends React.Component {
               <FormSelect name='shoppingListSelection'
                           size='sm'
                           id='#shoppingListSelection'
-                          value={this.state.shoppingListSelection || ''}
+                          value={this.state.shoppingListSelection}
                           onChange={this.handleInputChange}>
                           {lister}
               </FormSelect>

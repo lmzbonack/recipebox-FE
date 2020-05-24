@@ -10,8 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTimes } from "@fortawesome/free-solid-svg-icons"
 
 import RecipeService from '../store/services/RecipeService'
-
-import ConfirmDelete from './ConfirmDelete'
+import confirmService from '../Components/confirmService'
 
 export default class ShoppingListRecipes extends React.Component {
   constructor(props) {
@@ -22,7 +21,6 @@ export default class ShoppingListRecipes extends React.Component {
       recipes: []
     }
     this.fetchRecipeName = this.fetchRecipeName.bind(this)
-    this.loadDeleteInfo = this.loadDeleteInfo.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
   }
 
@@ -50,21 +48,23 @@ export default class ShoppingListRecipes extends React.Component {
     }
   }
 
-  loadDeleteInfo(id, name) {
+  async handleDelete(index, id, name) {
     this.setState({
       activeId: id,
       activeName: name
     })
-  }
-
-  handleDelete() {
-    const payload = {
-      "id": this.state.activeId,
-      "name": this.state.activeName
+    const result = await confirmService.show({
+      title: 'Delete?',
+      target: `#deleteButton-${index}`
+    })
+    if(result) {
+      const payload = {
+        "id": this.state.activeId,
+        "name": this.state.activeName
+      }
+      this.props.relayToast("success", "Recipe removed")
+      this.props.onRecipeDelete(payload)
     }
-    this.props.relayToast("success", "Recipe removed")
-    this.props.onRecipeDelete(payload)
-    this.closeConfirmModal()
   }
 
   render() {
@@ -75,17 +75,13 @@ export default class ShoppingListRecipes extends React.Component {
             <ListGroupItem className="mt-1 mb-1" key={index}>
               { recipe.name }
               <ButtonGroup className='ml-2 float-right'>
-                <Button theme='danger' className='ml-1' onClick={ () => { this.openConfirmModal(); this.loadDeleteInfo(recipe.id, recipe.name) } }>
+                <Button id= {`deleteButton-${index}`} theme='danger' className='ml-1' onClick={ () => { this.handleDelete(index, recipe.id, recipe.name) } }>
                   <FontAwesomeIcon className='ml-1' icon={faTimes} />
                 </Button>
               </ButtonGroup>
             </ListGroupItem>
           ))}
         </ListGroup>
-        <ConfirmDelete title='Remove recipe from list?'
-                      closeModal={close => this.closeConfirmModal = close}
-                      openModal={open => this.openConfirmModal = open}
-                      onDeleteConfirmation={this.handleDelete}/>
       </Container>
     )
   }
