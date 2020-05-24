@@ -13,6 +13,7 @@ import { Button,
 import { faArrowDown, faArrowUp, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import confirmService from '../confirmService'
 import RecipeService from '../../store/services/RecipeService'
 import ScrapingManifestService from '../../store/services/ScrapingManifestService'
 
@@ -162,13 +163,19 @@ export default class RecipeForm extends React.Component {
 
   async deleteRecipe() {
     try {
-      let updatedRecipeResponse = await RecipeService.delete(this.state.id)
-      if (updatedRecipeResponse.status === 204) {
-        const payload = {
-          id: this.props.id
+      const result = await confirmService.show({
+        title: 'Delete?',
+        target: '#deleteButton'
+      })
+      if (result) {
+        let updatedRecipeResponse = await RecipeService.delete(this.state.id)
+        if (updatedRecipeResponse.status === 204) {
+          const payload = {
+            id: this.props.id
+          }
+          this.props.relayToast("success", "Recipe Deleted")
+          this.props.onRecipesChangeTop(payload)
         }
-        this.props.relayToast("success", "Recipe Deleted")
-        this.props.onRecipesChangeTop(payload)
       }
     } catch (error) {
       this.props.relayToast("error", error.response.data.message)

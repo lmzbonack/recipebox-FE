@@ -10,7 +10,7 @@ import {
 import { faArrowDown, faArrowUp, faTimes, faPencilAlt, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import ConfirmDelete from './ConfirmDelete'
+import confirmService from '../Components/confirmService'
 import ShoppingListItems from './ShoppingListItems'
 import ShoppingListRecipes from './ShoppingListRecipes'
 
@@ -103,13 +103,19 @@ export default class SingleShoppingList extends React.Component {
 
   async deleteShoppingList() {
     try {
-      let deleteRecipeResponse = await ShoppingListService.delete(this.props.id)
-      if (deleteRecipeResponse.status === 204) {
-        const payload = {
-          id: this.props.id
+      const result = await confirmService.show({
+        title: 'Delete?',
+        target: `#deleteButton-${this.props.id}`
+      })
+      if(result) {
+        let deleteRecipeResponse = await ShoppingListService.delete(this.props.id)
+        if (deleteRecipeResponse.status === 204) {
+          const payload = {
+            id: this.props.id
+          }
+          this.props.relayToast("success", "Shopping list deleted")
+          this.props.onIngredientChangeTop(payload)
         }
-        this.props.relayToast("success", "Shopping list deleted")
-        this.props.onIngredientChangeTop(payload)
       }
     } catch (error) {
       this.props.relayToast("error", error.response.data.message)
@@ -182,10 +188,6 @@ export default class SingleShoppingList extends React.Component {
   render() {
     return (
       <Container>
-        <ConfirmDelete title='Delete List?'
-                       closeModal={close => this.closeConfirmModal = close}
-                       openModal={open => this.openConfirmModal = open}
-                       onDeleteConfirmation={this.deleteShoppingList}/>
         <Button className='mb-2' outline onClick={this.toggle}>{ this.props.name }
           <FontAwesomeIcon className='ml-1' icon = { this.state.collapse ? faArrowUp : faArrowDown } />
         </Button>
@@ -196,7 +198,7 @@ export default class SingleShoppingList extends React.Component {
               <Button className='ml-1' theme="secondary" onClick={ () => { this.updateName(this.state.name) } }>
                 <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
               </Button>
-              <Button className='ml-1' theme="danger" onClick={ () => { this.openConfirmModal() } }>
+              <Button id={`deleteButton-${this.props.id}`} className='ml-1' theme="danger" onClick={ () => { this.deleteShoppingList() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
               </Button>
             </InputGroup>

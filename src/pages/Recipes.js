@@ -105,7 +105,6 @@ export default class Recipes extends React.Component {
           error: ''
         })
       }
-      console.log(this.state)
     } catch (error) {
       toast.error(error.response.data.message)
     }

@@ -14,7 +14,7 @@ import { Button,
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTimes, faPencilAlt } from "@fortawesome/free-solid-svg-icons"
 
-import ConfirmDelete from './ConfirmDelete'
+import confirmService from '../Components/confirmService'
 
 export default class ShoppingListItems extends React.Component {
   constructor(props) {
@@ -29,7 +29,6 @@ export default class ShoppingListItems extends React.Component {
     this.handleDelete = this.handleDelete.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
-    this.loadDeleteIndex = this.loadDeleteIndex.bind(this)
   }
 
   componentDidMount() {
@@ -61,16 +60,18 @@ export default class ShoppingListItems extends React.Component {
     });
   }
 
-  loadDeleteIndex(index) {
+  async handleDelete(index) {
     this.setState({
       activeIndex: index
     })
-  }
-
-  handleDelete() {
-    const index = this.state.activeIndex
-    this.props.onIngredientDelete(index)
-    this.closeConfirmModal()
+    const result = await confirmService.show({
+      title: 'Delete?',
+      target: `#deleteButtonSingleItem-${index}`
+    })
+    if(result) {
+      const index = this.state.activeIndex
+      this.props.onIngredientDelete(index)
+    }
   }
 
   handleUpdate() {
@@ -93,18 +94,13 @@ export default class ShoppingListItems extends React.Component {
                 <Button theme='secondary' onClick={ () => { this.openModal(index, ingredient) } }>
                   <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
                 </Button>
-                <Button theme='danger' className='ml-1' onClick={ () => { this.openConfirmModal(); this.loadDeleteIndex(index); } }>
+                <Button id={`deleteButtonSingleItem-${index}`} theme='danger' className='ml-1' onClick={ () => { this.handleDelete(index) } }>
                   <FontAwesomeIcon className='ml-1' icon={faTimes} />
                 </Button>
               </ButtonGroup>
             </ListGroupItem>
           ))}
         </ListGroup>
-        <ConfirmDelete title='Delete Ingredient?'
-                       closeModal={close => this.closeConfirmModal = close}
-                       openModal={open => this.openConfirmModal = open}
-                       onDeleteConfirmation={this.handleDelete}/>
-
         <Modal open={open} toggle={this.toggleModal}>
             <ModalHeader>Edit Ingredient</ModalHeader>
           <ModalBody>

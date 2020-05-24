@@ -199,7 +199,7 @@ export default class CreatedRecipes extends React.Component {
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
-              <Button theme='danger' className='ml-1' onClick={ () => { this.recipeDeleteChild() } }>
+              <Button id='deleteButton' theme='danger' className='ml-1' onClick={ () => { this.recipeDeleteChild() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTrash} />
               </Button>
               <Button theme='warning' className='ml-1' onClick={ () => { this.toggleModal() } }>

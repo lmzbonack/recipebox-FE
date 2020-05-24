@@ -13,6 +13,7 @@ import RecipeContent from '../Components/RecipeContent'
 import DynamicModalHeader from '../Components/DynamicModalHeader'
 import UserService from '../store/services/UserService'
 import RecipeService from '../store/services/RecipeService'
+import confirmService from '../Components/confirmService'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faStar, faTimes, faListAlt } from "@fortawesome/free-solid-svg-icons"
@@ -114,10 +115,16 @@ export default class StarredRecipes extends React.Component {
     // Get first row only
     const id = rowData[0]._id['$oid']
     try {
-      let unStarRecipeResponse = await RecipeService.unStar(id)
-      if (unStarRecipeResponse.status === 200) {
-        toast.success("Recipe Unstarred")
-        this.retrieveStarredRecipes()
+      const result = await confirmService.show({
+        title: 'Unstar?',
+        target: '#unstarButtonTop'
+      })
+      if (result) {
+        let unStarRecipeResponse = await RecipeService.unStar(id)
+        if (unStarRecipeResponse.status === 200) {
+          toast.success("Recipe Unstarred")
+          this.retrieveStarredRecipes()
+        }
       }
     } catch (error) {
       toast.error(error.response.data.message)
@@ -145,7 +152,7 @@ export default class StarredRecipes extends React.Component {
                  style={{
                   "height": 600
                  }}>
-        <Button theme='danger' className='mb-2 mt-2' size='md' onClick={this.unstar}>Unstar
+        <Button id='unstarButtonTop' theme='danger' className='mb-2 mt-2' size='md' onClick={this.unstar}>Unstar
             <FontAwesomeIcon className='ml-1' icon={faStar} />
         </Button>
         <Modal size="lg h-100"
@@ -171,7 +178,7 @@ export default class StarredRecipes extends React.Component {
               <Button theme='info' className='ml-1' onClick={ () => { this.togglePopoverChild() } }>
                   <FontAwesomeIcon className='ml-1' icon={faListAlt} />
               </Button>
-              <Button theme='secondary' className='ml-1' onClick={ () => this.unstarRecipeChild() }>
+              <Button id='unstarButton' theme='secondary' className='ml-1' onClick={ () => this.unstarRecipeChild() }>
                 <FontAwesomeIcon className='ml-1' icon={faStar} />
               </Button>
             </ButtonGroup>

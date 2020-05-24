@@ -5,6 +5,7 @@ import { Form,
          FormGroup } from 'shards-react'
 
 import ScrapingManifestService from '../../store/services/ScrapingManifestService'
+import confirmService from '../confirmService'
 
 export default class ScrapingManifestForm extends React.Component {
   constructor(props) {
@@ -131,13 +132,19 @@ export default class ScrapingManifestForm extends React.Component {
 
   async deleteSmanifest() {
     try {
-      let deleteSmanifestResponse = await ScrapingManifestService.delete(this.state.id)
-      if (deleteSmanifestResponse.status === 204) {
-        const payload = {
-          id: this.props.id
+      const result = await confirmService.show({
+        title: 'Delete?',
+        target: '#deleteSmanifestButton'
+      })
+      if (result) {
+        let deleteSmanifestResponse = await ScrapingManifestService.delete(this.state.id)
+        if (deleteSmanifestResponse.status === 204) {
+          const payload = {
+            id: this.props.id
+          }
+          this.props.relayToast("success", "Scraping manifest deleted")
+          this.props.onSmanifestChangeTop(payload)
         }
-        this.props.relayToast("success", "Scraping manifest deleted")
-        this.props.onSmanifestChangeTop(payload)
       }
     } catch (error) {
       this.props.relayToast("error", error.response.data.message)

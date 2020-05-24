@@ -3,6 +3,7 @@ import React from 'react'
 import { Container } from 'shards-react'
 
 import RecipeService from '../store/services/RecipeService'
+import confirmService from '../Components/confirmService'
 
 export default class RecipeContent extends React.Component {
   constructor(props) {
@@ -30,10 +31,16 @@ export default class RecipeContent extends React.Component {
 
   async unstarRecipe() {
     try {
-      let unStarRecipeResponse = await RecipeService.unStar(this.props.recipe._id.$oid)
-      if (unStarRecipeResponse.status === 200) {
-        this.props.relayToast("success", "Recipe Unstarred")
-        this.props.onRecipesStarredTop()
+      const result = await confirmService.show({
+        title: 'Unstar?',
+        target: '#unstarButton'
+      })
+      if (result) {
+        let unStarRecipeResponse = await RecipeService.unStar(this.props.recipe._id.$oid)
+        if (unStarRecipeResponse.status === 200) {
+          this.props.relayToast("success", "Recipe Unstarred")
+          this.props.onRecipesStarredTop()
+        }
       }
     } catch (error) {
       this.props.relayToast("error", error.response.data)
