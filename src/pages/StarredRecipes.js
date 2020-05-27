@@ -43,9 +43,10 @@ export default class StarredRecipes extends React.Component {
       userData: null,
       activeRecipe: undefined,
     }
+    this.closeModal = this.closeModal.bind(this)
     this.displayToastNotification = this.displayToastNotification.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
-    this.closeModal = this.closeModal.bind(this)
+    this.loadRecipeDetails = this.loadRecipeDetails.bind(this)
     this.viewRecipeDetails = this.viewRecipeDetails.bind(this)
     this.unstar = this.unstar.bind(this)
     this.handleRecipeUnstar = this.handleRecipeUnstar.bind(this)
@@ -82,6 +83,12 @@ export default class StarredRecipes extends React.Component {
       activeRecipe: event.data
     })
     this.toggleModal()
+  }
+
+  loadRecipeDetails(event) {
+    this.setState({
+      activeRecipe: event.data
+    })
   }
 
   async retrieveStarredRecipes() {
@@ -146,13 +153,13 @@ export default class StarredRecipes extends React.Component {
   }
 
   render() {
-    const { open } = this.state
+    const { open, activeRecipe } = this.state
     return(
       <Container className='mt-3 ag-theme-balham w-100'
                  style={{
                   "height": 600
                  }}>
-        <Button id='unstarButtonTop' theme='danger' className='mb-2 mt-2' size='md' onClick={this.unstar}>Unstar
+        <Button disabled={!activeRecipe} id='unstarButtonTop' theme='danger' className='mb-2 mt-2' size='md' onClick={this.unstar}>Unstar
             <FontAwesomeIcon className='ml-1' icon={faStar} />
         </Button>
         <Modal size="lg h-100"
@@ -192,6 +199,7 @@ export default class StarredRecipes extends React.Component {
           rowData={this.state.starredRecipes}
           rowSelection='single'
           onGridReady={this.onGridReady}
+          onRowSelected={this.loadRecipeDetails}
           onRowDoubleClicked={this.viewRecipeDetails}
           onFirstDataRendered={this.onFirstDataRendered.bind(this)}
           frameworkComponents={this.state.frameworkComponents}
