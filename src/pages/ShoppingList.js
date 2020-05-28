@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTimes, faPencilAlt, faPlus } from "@fortawesome/free-solid-svg-icons"
 
 import ShoppingListForm from '../Components/forms/ShoppingListForm'
+import ShoppingListService from '../store/services/ShoppingListService'
 import UserService from '../store/services/UserService'
 import SingleShoppingList from '../Components/SingleShoppingList'
 
@@ -34,13 +35,25 @@ export default class ShoppingList extends React.Component {
      this.retrieveShoppingLists()
   }
 
-  handleIngredientChangeTop(payload) {
-    // For now this is fine eventually we will want to just fetch and pass into state the one list that changes
-    // const updatedList= await ShoppingListService.fetchOne(payload.id)
-    this.retrieveShoppingLists()
+  async handleIngredientChangeTop(payload) {
+    const updatedList= await ShoppingListService.fetchOne(payload.id)
+    let index_to_replace = null
+    this.state.shoppingLists.forEach( (item, idx) => {
+      if(item._id.$oid === updatedList.data._id.$oid){
+        index_to_replace = idx
+      }
+    })
+
+    let copyLists = this.state.shoppingLists
+    copyLists[index_to_replace] = updatedList.data
+
+    this.setState({
+      shoppingLists: copyLists
+    })
   }
 
   handleShoppingListChangeCreate(payload) {
+    // For now keep this. When a new list is created just pull down everything again
     this.toggleRecipeModal()
     this.retrieveShoppingLists()
   }
@@ -67,6 +80,7 @@ export default class ShoppingList extends React.Component {
           shoppingLists: shoppingListResponse.data,
         })
       }
+      console.log(this.state)
     } catch (error) {
         toast.error(error.response.data.message)
     }

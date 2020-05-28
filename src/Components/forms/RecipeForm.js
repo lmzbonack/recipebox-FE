@@ -117,7 +117,8 @@ export default class RecipeForm extends React.Component {
       let updatedRecipeResponse = await RecipeService.create(payload)
       if (updatedRecipeResponse.status === 201) {
         const payload = {
-          id: this.props.id
+          operation: "create",
+          id: this.state.id
         }
         this.props.relayToast("success", "Recipe Created")
         this.props.onRecipesChangeTop(payload)
@@ -151,7 +152,8 @@ export default class RecipeForm extends React.Component {
       let updatedRecipeResponse = await RecipeService.update(this.state.id, payload)
       if (updatedRecipeResponse.status === 200) {
         const payload = {
-          id: this.props.id
+          operation: "edit",
+          id: this.state.id
         }
         this.props.relayToast("success", "Recipe Edited")
         this.props.onRecipesChangeTop(payload)
@@ -171,7 +173,8 @@ export default class RecipeForm extends React.Component {
         let updatedRecipeResponse = await RecipeService.delete(this.state.id)
         if (updatedRecipeResponse.status === 204) {
           const payload = {
-            id: this.props.id
+            operation: "delete",
+            id: this.state.id
           }
           this.props.relayToast("success", "Recipe Deleted")
           this.props.onRecipesChangeTop(payload)

@@ -66,9 +66,15 @@ export default class StarredRecipes extends React.Component {
     }
   }
 
-  handleRecipeUnstar() {
+  handleRecipeUnstar(payload) {
+    const removedId = payload.id
+    let newRecipes = this.state.starredRecipes.filter( item => item._id.$oid !== removedId )
+    this.setState({
+      starredRecipes: newRecipes
+    }, () => {
+      this.gridApi.setRowData(this.state.starredRecipes)
+    })
     this.toggleModal()
-    this.retrieveStarredRecipes()
   }
 
   closeModal(event) {
@@ -129,8 +135,13 @@ export default class StarredRecipes extends React.Component {
       if (result) {
         let unStarRecipeResponse = await RecipeService.unStar(id)
         if (unStarRecipeResponse.status === 200) {
+          let newRecipes = this.state.starredRecipes.filter( item => item._id.$oid !== id )
+          this.setState({
+            starredRecipes: newRecipes
+          }, () => {
+            this.gridApi.setRowData(this.state.starredRecipes)
+          })
           toast.success("Recipe Unstarred")
-          this.retrieveStarredRecipes()
         }
       }
     } catch (error) {

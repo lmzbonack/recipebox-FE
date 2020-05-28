@@ -19,6 +19,7 @@ import 'ag-grid-community/dist/styles/ag-theme-balham.css'
 import LengthRenderer from '../Components/renderers/LengthRenderer'
 
 import UserService from '../store/services/UserService'
+import RecipeService from '../store/services/RecipeService'
 import RecipeForm from '../Components/forms/RecipeForm'
 import DynamicModalHeader from '../Components/DynamicModalHeader'
 import AdderModal from '../Components/AdderModal'
@@ -50,8 +51,7 @@ export default class CreatedRecipes extends React.Component {
     this.toggleModal = this.toggleModal.bind(this)
     this.toggleNewModal = this.toggleNewModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
-    this.handleRecipesChangeEdit = this.handleRecipesChangeEdit.bind(this)
-    this.handleRecipesChangeCreate = this.handleRecipesChangeCreate.bind(this)
+    this.handleRecipesChange = this.handleRecipesChange.bind(this)
   }
 
   async retrieveCreatedRecipes() {
@@ -80,14 +80,30 @@ export default class CreatedRecipes extends React.Component {
     }
   }
 
-  handleRecipesChangeEdit() {
-    this.retrieveCreatedRecipes()
-    this.toggleModal()
-  }
+  async handleRecipesChange(payload) {
+    if (payload.operation !== 'edit') {
+      this.retrieveCreatedRecipes()
+      if (payload.operation === 'create') this.toggleNewModal()
+      if (payload.operation === 'delete') this.toggleModal()
+    } else {
+      const updatedRecipe = await RecipeService.fetchOne(payload.id)
+      let index_to_replace = null
+      this.state.createdRecipes.forEach( (item, idx) => {
+        if(item._id.$oid === updatedRecipe.data._id.$oid){
+          index_to_replace = idx
+        }
+      })
 
-  handleRecipesChangeCreate() {
-    this.retrieveCreatedRecipes()
-    this.toggleNewModal()
+      let copyCreatedRecipes = this.state.createdRecipes
+      copyCreatedRecipes[index_to_replace] = updatedRecipe.data
+
+      this.setState({
+        createdRecipes: copyCreatedRecipes
+      }, () => {
+        this.gridApi.setRowData(this.state.createdRecipes)
+      })
+      this.toggleModal()
+    }
   }
 
   displayToastNotification(type, message) {
@@ -161,7 +177,7 @@ export default class CreatedRecipes extends React.Component {
             <RecipeForm mode='create'
                         setCreateRecipe={createRecipe => this.createRecipeChild = createRecipe}
                         setScrapeRecipe={scrapeRecipe => this.scrapeRecipeChild = scrapeRecipe}
-                        onRecipesChangeTop={this.handleRecipesChangeCreate}
+                        onRecipesChangeTop={this.handleRecipesChange}
                         relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
@@ -194,7 +210,7 @@ export default class CreatedRecipes extends React.Component {
                         recipe={this.state.activeRecipe}
                         setRecipeEdit={recipeEdit => this.recipeEditChild = recipeEdit}
                         setRecipeDelete={recipeDelete => this.recipeDeleteChild = recipeDelete}
-                        onRecipesChangeTop={this.handleRecipesChangeEdit}
+                        onRecipesChangeTop={this.handleRecipesChange}
                         relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
