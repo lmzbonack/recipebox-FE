@@ -54,8 +54,6 @@ class Confirm extends Component {
   }
 
   show(props = {}) {
-    console.log('show function')
-    console.log(props)
     const showConfirmProps = { ...this.props.createConfirmProps, ...props };
     this.setState({ isOpen: true, showConfirmProps });
     return new Promise((res) => {

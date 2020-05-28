@@ -88,6 +88,7 @@ export default class ScrapingManifestForm extends React.Component {
       let newSmanifestResponse = await ScrapingManifestService.create(payload)
       if(newSmanifestResponse.status === 201){
         const payload = {
+          operation: "create",
           id: this.props.id
         }
         this.props.relayToast("success", "Scraping manifest created")
@@ -120,7 +121,8 @@ export default class ScrapingManifestForm extends React.Component {
       let editSmanifestResponse = await ScrapingManifestService.update(this.state.id, payload)
       if(editSmanifestResponse.status === 200){
         const payload = {
-          id: this.props.id
+          operation: "edit",
+          id: this.state.id
         }
         this.props.relayToast("success", "Scraping manifest edited")
         this.props.onSmanifestChangeTop(payload)
@@ -140,6 +142,7 @@ export default class ScrapingManifestForm extends React.Component {
         let deleteSmanifestResponse = await ScrapingManifestService.delete(this.state.id)
         if (deleteSmanifestResponse.status === 204) {
           const payload = {
+            operation: "delete",
             id: this.props.id
           }
           this.props.relayToast("success", "Scraping manifest deleted")

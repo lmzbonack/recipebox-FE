@@ -19,6 +19,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-balham.css'
 
 import UserService from '../store/services/UserService'
+import ScrapingManifestService from '../store/services/ScrapingManifestService'
 import ScrapingManifestForm from '../Components/forms/ScrapingManifestForm'
 
 
@@ -41,8 +42,7 @@ export default class ScrapingManifests extends React.Component {
     this.toggleEditModal = this.toggleEditModal.bind(this)
     this.viewSmanifestDetails = this.viewSmanifestDetails.bind(this)
     this.retrieveCreatedManifests = this.retrieveCreatedManifests.bind(this)
-    this.handleSmanifestChangeCreate = this.handleSmanifestChangeCreate.bind(this)
-    this.handleSmanifestChangeEdit = this.handleSmanifestChangeEdit.bind(this)
+    this.handleSmanifestChange = this.handleSmanifestChange.bind(this)
   }
 
   displayToastNotification(type, message) {
@@ -99,14 +99,30 @@ export default class ScrapingManifests extends React.Component {
     params.api.sizeColumnsToFit();
   }
 
-  handleSmanifestChangeCreate() {
-    this.retrieveCreatedManifests()
-    this.toggleNewModal()
-  }
+  async handleSmanifestChange(payload) {
+    if (payload.operation !== 'edit') {
+      this.retrieveCreatedManifests()
+      if (payload.operation === 'create') this.toggleNewModal()
+      if (payload.operation === 'delete') this.toggleEditModal()
+    } else {
+      console.log(payload)
+      const updatedManifest = await ScrapingManifestService.fetchOne(payload.id)
+      let index_to_replace = null
+      this.state.createdManifests.forEach( (item, idx) => {
+        if(item._id.$oid === updatedManifest.data._id.$oid){
+          index_to_replace = idx
+        }
+      })
 
-  handleSmanifestChangeEdit() {
-    this.retrieveCreatedManifests()
-    this.toggleEditModal()
+      let copyCreatedManifests = this.state.createdManifests
+      copyCreatedManifests[index_to_replace] = updatedManifest.data
+      this.setState({
+        createdManifests: copyCreatedManifests
+      }, () => {
+        this.gridApi.setRowData(this.state.createdManifests)
+      })
+      this.toggleEditModal()
+    }
   }
 
   render() {
@@ -131,7 +147,7 @@ export default class ScrapingManifests extends React.Component {
               }}>
             <ScrapingManifestForm mode='create'
                                   setCreateSmanifest={createSmanifest => this.createSmanifestChild = createSmanifest}
-                                  onSmanifestChangeTop={this.handleSmanifestChangeCreate}
+                                  onSmanifestChangeTop={this.handleSmanifestChange}
                                   relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
@@ -159,7 +175,7 @@ export default class ScrapingManifests extends React.Component {
                                   smanifest={this.state.activeManifest}
                                   setEditSmanifest={editSmanifest => this.editSmanifestChild = editSmanifest}
                                   setDeleteSmanifest={deleteSmanifest => this.deleteSmanifestChild = deleteSmanifest}
-                                  onSmanifestChangeTop={this.handleSmanifestChangeEdit}
+                                  onSmanifestChangeTop={this.handleSmanifestChange}
                                   relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
