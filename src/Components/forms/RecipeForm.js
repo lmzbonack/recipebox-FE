@@ -68,6 +68,7 @@ export default class RecipeForm extends React.Component {
     this.scrapeNewRecipe = this.scrapeNewRecipe.bind(this)
     this.deleteRecipe = this.deleteRecipe.bind(this)
     this.unitsConverter = this.unitsConverter.bind(this)
+    this.starRecipe = this.starRecipe.bind(this)
   }
 
   unitsConverter(val) {
@@ -82,6 +83,7 @@ export default class RecipeForm extends React.Component {
     if (this.props.mode === 'edit') {
       this.props.setRecipeEdit(this.submitEditedRecipe)
       this.props.setRecipeDelete(this.deleteRecipe)
+      this.props.setStarRecipe(this.starRecipe)
     }
     if (this.props.mode === 'create') {
       this.props.setCreateRecipe(this.submitCreatedRecipe);
@@ -125,6 +127,18 @@ export default class RecipeForm extends React.Component {
       }
     } catch (error) {
       this.props.relayToast("error", error.response.data.message)
+    }
+  }
+
+  async starRecipe() {
+    try {
+      let starRecipeResponse = await RecipeService.star(this.props.recipe._id.$oid)
+      if (starRecipeResponse.status === 200) {
+        this.props.relayToast("success", "Recipe Starred")
+        this.props.onRecipesStarredTop({"id": this.props.recipe._id.$oid})
+      }
+    } catch (error) {
+      this.props.relayToast("error", error.response.data)
     }
   }
 

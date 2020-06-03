@@ -11,7 +11,13 @@ import { Button,
          ModalFooter } from 'shards-react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faListAlt, faTimes, faPencilAlt, faPlus, faTrash, faCaravan } from "@fortawesome/free-solid-svg-icons"
+import { faListAlt,
+         faTimes,
+         faPencilAlt,
+         faPlus,
+         faTrash,
+         faCaravan,
+         faStar } from "@fortawesome/free-solid-svg-icons"
 
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -20,6 +26,7 @@ import LengthRenderer from '../Components/renderers/LengthRenderer'
 
 import UserService from '../store/services/UserService'
 import RecipeService from '../store/services/RecipeService'
+
 import RecipeForm from '../Components/forms/RecipeForm'
 import DynamicModalHeader from '../Components/DynamicModalHeader'
 import AdderModal from '../Components/AdderModal'
@@ -51,6 +58,7 @@ export default class CreatedRecipes extends React.Component {
     this.toggleModal = this.toggleModal.bind(this)
     this.toggleNewModal = this.toggleNewModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
+    this.handleRecipeStar = this.handleRecipeStar.bind(this)
     this.handleRecipesChange = this.handleRecipesChange.bind(this)
   }
 
@@ -118,6 +126,10 @@ export default class CreatedRecipes extends React.Component {
     this.setState({
       activeRecipe: event.data
     })
+    this.toggleModal()
+  }
+
+  handleRecipeStar() {
     this.toggleModal()
   }
 
@@ -209,8 +221,10 @@ export default class CreatedRecipes extends React.Component {
             <RecipeForm mode='edit'
                         recipe={this.state.activeRecipe}
                         setRecipeEdit={recipeEdit => this.recipeEditChild = recipeEdit}
+                        setStarRecipe={starRecipe => this.starRecipeChild = starRecipe}
                         setRecipeDelete={recipeDelete => this.recipeDeleteChild = recipeDelete}
                         onRecipesChangeTop={this.handleRecipesChange}
+                        onRecipesStarredTop={this.handleRecipeStar}
                         relayToast={this.displayToastNotification}/>
           </ModalBody>
           <ModalFooter>
@@ -221,6 +235,9 @@ export default class CreatedRecipes extends React.Component {
               <Button theme='warning' className='ml-1' onClick={ () => { this.toggleModal() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
               </Button>
+              <Button theme='info' className='ml-1' onClick={ () => this.starRecipeChild() }>
+                  <FontAwesomeIcon className='ml-1' icon={faStar} />
+                </Button>
               <Button theme='info' className='ml-1' onClick={ () => { this.togglePopoverChild() } }>
                   <FontAwesomeIcon className='ml-1' icon={faListAlt} />
               </Button>
