@@ -1,6 +1,6 @@
 import React from 'react'
 import SearchAutoSuggest from '../Components/SearchAutoSuggest'
-import { Container, Modal, ModalBody, ModalFooter } from 'shards-react'
+import { Container } from 'shards-react'
 
 
 export default class Search extends React.Component{
@@ -12,7 +12,6 @@ export default class Search extends React.Component{
   }
 
   render(){
-    const { open } = this.state
     return(
       <Container>
         <h2>Search</h2>

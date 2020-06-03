@@ -37,8 +37,8 @@ export default class SingleShoppingList extends React.Component {
 
   componentDidMount() {
     this.setState( (state, props) => ({
-      collapse: this.state.collapse,
-      name: this.props.name,
+      collapse: state.collapse,
+      name: props.name,
       newIngredient: ''
     }))
   }

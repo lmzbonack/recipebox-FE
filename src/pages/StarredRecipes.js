@@ -7,7 +7,10 @@ import { Button,
          Container,
          Modal,
          ModalBody,
-         ModalFooter } from 'shards-react'
+         ModalFooter,
+         FormInput,
+         Row,
+         Col } from 'shards-react'
 
 import RecipeContent from '../Components/RecipeContent'
 import DynamicModalHeader from '../Components/DynamicModalHeader'
@@ -50,12 +53,19 @@ export default class StarredRecipes extends React.Component {
     this.viewRecipeDetails = this.viewRecipeDetails.bind(this)
     this.unstar = this.unstar.bind(this)
     this.handleRecipeUnstar = this.handleRecipeUnstar.bind(this)
+    this.handleQuickFilter = this.handleQuickFilter.bind(this)
   }
 
   toggleModal() {
     this.setState({
       open: !this.state.open,
     });
+  }
+
+  handleQuickFilter(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.gridApi.setQuickFilter(value)
   }
 
   displayToastNotification(type, message) {
@@ -168,11 +178,23 @@ export default class StarredRecipes extends React.Component {
     return(
       <Container className='mt-3 ag-theme-balham w-100'
                  style={{
-                  "height": 600
+                  "height": "90vh"
                  }}>
-        <Button disabled={!activeRecipe} id='unstarButtonTop' theme='danger' className='mb-2 mt-2' size='md' onClick={this.unstar}>Unstar
-            <FontAwesomeIcon className='ml-1' icon={faStar} />
-        </Button>
+        <Row className='mb-1'>
+          <Col>
+            <FormInput size="sm"
+                       name="filterValue"
+                       id="#filterValue"
+                       placeholder="Type to Search"
+                       onChange={this.handleQuickFilter} />
+          </Col>
+          <Col>
+            <Button className='float-right' size='sm' disabled={!activeRecipe} id='unstarButtonTop' theme='danger' onClick={this.unstar}>Unstar
+              <FontAwesomeIcon className='ml-1' icon={faStar} />
+            </Button>
+          </Col>
+        </Row>
+
         <Modal size="lg h-100"
                open={open}
                toggle={this.toggleModal}>

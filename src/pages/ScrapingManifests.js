@@ -8,10 +8,13 @@ import { Button,
          Modal,
          ModalBody,
          ModalHeader,
-         ModalFooter } from 'shards-react'
+         ModalFooter,
+         FormInput,
+         Row,
+         Col } from 'shards-react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes, faPencilAlt, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faTimes, faPencilAlt, faPlus, faTrash, faList } from "@fortawesome/free-solid-svg-icons"
 
 
 import { AgGridReact } from 'ag-grid-react'
@@ -36,6 +39,7 @@ export default class ScrapingManifests extends React.Component {
         {headerName: 'Domain', field: 'domain', sortable: true, filter: true, resizable: true},
       ],
       createdManifests: null,
+      page: 1
     }
     this.displayToastNotification = this.displayToastNotification.bind(this)
     this.toggleNewModal = this.toggleNewModal.bind(this)
@@ -43,6 +47,8 @@ export default class ScrapingManifests extends React.Component {
     this.viewSmanifestDetails = this.viewSmanifestDetails.bind(this)
     this.retrieveCreatedManifests = this.retrieveCreatedManifests.bind(this)
     this.handleSmanifestChange = this.handleSmanifestChange.bind(this)
+    this.handleQuickFilter = this.handleQuickFilter.bind(this)
+    this.retrieveNextSmanifestPage = this.retrieveNextSmanifestPage.bind(this)
   }
 
   displayToastNotification(type, message) {
@@ -53,15 +59,20 @@ export default class ScrapingManifests extends React.Component {
     }
   }
 
+  handleQuickFilter(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.gridApi.setQuickFilter(value)
+  }
+
   async componentDidMount() {
     await this.retrieveCreatedManifests()
   }
 
   async retrieveCreatedManifests() {
     try {
-      let createdManifestsResponse = await UserService.fetchUserData('created-manifests', 1)
+      let createdManifestsResponse = await UserService.fetchUserData('created-manifests', this.state.page)
       if (createdManifestsResponse.status === 200) {
-        // console.log(createdManifestsResponse.data)
         this.setState({
           createdManifests: createdManifestsResponse.data,
         })
@@ -69,6 +80,26 @@ export default class ScrapingManifests extends React.Component {
     } catch (error) {
         toast.error(error.response.data.message)
     }
+  }
+
+  async retrieveNextSmanifestPage() {
+    this.setState( state => ({
+      page: state.page + 1
+    }), async () => {
+      try {
+        let createdManifestsResponse = await UserService.fetchUserData('created-manifests', this.state.page)
+        if (createdManifestsResponse.status === 200) {
+          this.setState( state => ({
+            recipes: createdManifestsResponse.data.concat(state.createdManifests)
+          }))
+        }
+      } catch (error) {
+        if (error.response.status === 404) toast.error('No additional manifests')
+        else {
+          toast.error(error.response.data.message)
+        }
+      }
+    })
   }
 
   viewSmanifestDetails(event) {
@@ -105,7 +136,6 @@ export default class ScrapingManifests extends React.Component {
       if (payload.operation === 'create') this.toggleNewModal()
       if (payload.operation === 'delete') this.toggleEditModal()
     } else {
-      console.log(payload)
       const updatedManifest = await ScrapingManifestService.fetchOne(payload.id)
       let index_to_replace = null
       this.state.createdManifests.forEach( (item, idx) => {
@@ -130,12 +160,28 @@ export default class ScrapingManifests extends React.Component {
     return(
       <Container className='mt-3 ag-theme-balham w-100'
                  style={{
-                  "height": 600
+                  "height": "90vh"
                  }}>
-        <Button className='mb-2 mt-2' size='md' onClick={this.toggleNewModal}>Add
-            <FontAwesomeIcon className='ml-1' icon={faPlus} />
-        </Button>
-
+        <Row className='mb-1'>
+          <Col>
+            <FormInput size="sm"
+                       name="filterValue"
+                       id="#filterValue"
+                       placeholder="Type to Search"
+                       onChange={this.handleQuickFilter} />
+          </Col>
+          <Col>
+            <Button theme='secondary' className='float-right ml-1' size='sm' onClick={this.retrieveNextSmanifestPage}>
+              <span style={{"display": "inline-flex"}}>
+                Load More
+              </span>
+              <FontAwesomeIcon className='ml-1' icon={faList} style={{"display": "inline-flex", "verticalAlign": "center"}}/>
+            </Button>
+            <Button className='float-right' size='sm' onClick={this.toggleNewModal}>Add
+              <FontAwesomeIcon className='ml-1' icon={faPlus} />
+            </Button>
+          </Col>
+        </Row>
         {/* New Modal */}
         <Modal size="lg"
                open={newModalOpen}
