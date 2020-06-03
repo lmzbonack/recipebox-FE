@@ -7,7 +7,10 @@ import { Button,
          Container,
          Modal,
          ModalBody,
-         ModalFooter } from 'shards-react'
+         ModalFooter,
+         FormInput,
+         Row,
+         Col } from 'shards-react'
 
 import RecipeContent from '../Components/RecipeContent'
 import DynamicModalHeader from '../Components/DynamicModalHeader'
@@ -15,7 +18,7 @@ import RecipeService from '../store/services/RecipeService'
 import UserService from '../store/services/UserService'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes, faStar, faListAlt } from "@fortawesome/free-solid-svg-icons"
+import { faTimes, faStar, faListAlt, faList } from "@fortawesome/free-solid-svg-icons"
 
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -41,13 +44,15 @@ export default class Recipes extends React.Component {
       recipes: null,
       userData: null,
       activeRecipe: undefined,
-      error: ''
+      page: 1
     }
+    this.handleQuickFilter = this.handleQuickFilter.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.viewRecipeDetails = this.viewRecipeDetails.bind(this)
     this.handleRecipeStar = this.handleRecipeStar.bind(this)
     this.displayToastNotification = this.displayToastNotification.bind(this)
+    this.retrieveNextRecipePage = this.retrieveNextRecipePage.bind(this)
   }
 
   displayToastNotification(type, message) {
@@ -56,6 +61,12 @@ export default class Recipes extends React.Component {
     else {
       console.error('Umm we cannot send that message')
     }
+  }
+
+  handleQuickFilter(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.gridApi.setQuickFilter(value)
   }
 
   toggleModal() {
@@ -88,7 +99,6 @@ export default class Recipes extends React.Component {
       if (userDetailsReponse) {
         this.setState({
           userData: userDetailsReponse.data,
-          error: ''
         })
       }
     } catch (error) {
@@ -98,16 +108,35 @@ export default class Recipes extends React.Component {
 
   async retrieveRecipes() {
     try {
-      let recipesResponse = await RecipeService.fetchAll(1)
+      let recipesResponse = await RecipeService.fetchAll(this.state.page)
       if (recipesResponse.status === 200) {
         this.setState({
           recipes: recipesResponse.data,
-          error: ''
         })
       }
     } catch (error) {
       toast.error(error.response.data.message)
     }
+  }
+
+  async retrieveNextRecipePage() {
+    this.setState( state => ({
+      page: state.page + 1
+    }), async () => {
+      try {
+        let recipesResponse = await RecipeService.fetchAll(this.state.page)
+        if (recipesResponse.status === 200) {
+          this.setState( state => ({
+            recipes: recipesResponse.data.concat(state.recipes)
+          }))
+        }
+      } catch (error) {
+        if (error.response.status === 404) toast.error('You did it. You actually ran out of Recipes.')
+        else {
+          toast.error(error.response.data.message)
+        }
+      }
+    })
   }
 
   componentDidMount() {
@@ -131,6 +160,24 @@ export default class Recipes extends React.Component {
                  style={{
                   "height": "90vh"
                  }}>
+        <Row className='mb-1'>
+          <Col>
+            <FormInput size="sm"
+                       name="filterValue"
+                       id="#filterValue"
+                       placeholder="Type to Search"
+                       onChange={this.handleQuickFilter} />
+          </Col>
+          <Col>
+            <Button theme='secondary' className='float-right' size='sm' onClick={this.retrieveNextRecipePage}>
+              <span style={{"display": "inline-flex"}}>
+                Load More
+              </span>
+              <FontAwesomeIcon className='ml-1' icon={faList} style={{"display": "inline-flex", "verticalAlign": "center"}}/>
+            </Button>
+          </Col>
+        </Row>
+
         <Modal size="lg h-100"
                open={open}
                toggle={this.toggleModal}>

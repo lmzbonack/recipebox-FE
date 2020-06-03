@@ -106,7 +106,6 @@ export default class SearchAutoSuggest extends React.Component {
   }
 
   getSuggestionValue(suggestion) {
-    console.log(suggestion)
     // Set the state for the modal and open it
     this.setState({
       activeRecipe: suggestion

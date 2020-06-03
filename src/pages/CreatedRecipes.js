@@ -8,11 +8,15 @@ import { Button,
          Modal,
          ModalBody,
          ModalHeader,
-         ModalFooter } from 'shards-react'
+         ModalFooter,
+         FormInput,
+         Row,
+         Col } from 'shards-react'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faListAlt,
          faTimes,
+         faList,
          faPencilAlt,
          faPlus,
          faTrash,
@@ -50,7 +54,8 @@ export default class CreatedRecipes extends React.Component {
         lengthRenderer: LengthRenderer,
       },
       createdRecipes: null,
-      userData: null
+      userData: null,
+      page: 1
     }
     this.displayToastNotification = this.displayToastNotification.bind(this)
     this.retrieveCreatedRecipes = this.retrieveCreatedRecipes.bind(this)
@@ -60,11 +65,13 @@ export default class CreatedRecipes extends React.Component {
     this.closeModal = this.closeModal.bind(this)
     this.handleRecipeStar = this.handleRecipeStar.bind(this)
     this.handleRecipesChange = this.handleRecipesChange.bind(this)
+    this.handleQuickFilter = this.handleQuickFilter.bind(this)
+    this.retrievedNextCreatedRecipesPage = this.retrievedNextCreatedRecipesPage.bind(this)
   }
 
   async retrieveCreatedRecipes() {
     try {
-      let createdRecipesResponse = await UserService.fetchUserData('created-recipes', 1)
+      let createdRecipesResponse = await UserService.fetchUserData('created-recipes', this.state.page)
       if (createdRecipesResponse.status === 200) {
         this.setState({
           createdRecipes: createdRecipesResponse.data,
@@ -73,6 +80,26 @@ export default class CreatedRecipes extends React.Component {
     } catch (error) {
       toast.error(error.response.data.message)
     }
+  }
+
+  async retrievedNextCreatedRecipesPage() {
+    this.setState( state => ({
+      page: state.page + 1
+    }), async () => {
+      try {
+        let createdRecipesResponse = await UserService.fetchUserData('created-recipes', this.state.page)
+        if (createdRecipesResponse.status === 200) {
+          this.setState( state => ({
+            createdRecipes: createdRecipesResponse.data.concat(state.createdRecipes)
+          }))
+        }
+      } catch (error) {
+        if (error.response.status === 404) toast.error('You did it. You actually ran out of Recipes.')
+        else {
+          toast.error(error.response.data.message)
+        }
+      }
+    })
   }
 
   async retrieveUserDetails() {
@@ -112,6 +139,12 @@ export default class CreatedRecipes extends React.Component {
       })
       this.toggleModal()
     }
+  }
+
+  handleQuickFilter(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.gridApi.setQuickFilter(value)
   }
 
   displayToastNotification(type, message) {
@@ -171,11 +204,25 @@ export default class CreatedRecipes extends React.Component {
     return (
       <Container className='mt-3 ag-theme-balham w-100'
                  style={{
-                  "height": 600
+                  "height": "90vh"
                  }}>
-        <Button className='mb-2 mt-2' size='md' onClick={this.toggleNewModal}>Add
-            <FontAwesomeIcon className='ml-1' icon={faPlus} />
-        </Button>
+        <Row className='mb-1'>
+          <Col>
+            <FormInput size="sm"
+                        name="filterValue"
+                        id="#filterValue"
+                        placeholder="Type to Search"
+                        onChange={this.handleQuickFilter} />
+          </Col>
+          <Col>
+            <Button theme='secondary' className='float-right ml-1' size='sm' onClick={this.retrievedNextCreatedRecipesPage}>Load More
+                <FontAwesomeIcon className='ml-1' icon={faList} />
+            </Button>
+            <Button className='float-right' size='sm' onClick={this.toggleNewModal}>Add
+                <FontAwesomeIcon className='ml-1' icon={faPlus} />
+            </Button>
+          </Col>
+        </Row>
 
         {/*New Modal  */}
         <Modal size="lg"
