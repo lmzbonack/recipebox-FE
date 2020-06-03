@@ -1,6 +1,4 @@
 import React from "react";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Navbar,
   NavbarToggler,
@@ -8,7 +6,6 @@ import {
   Nav,
   NavItem,
   NavLink,
-  Button,
   Dropdown,
   DropdownToggle,
   DropdownMenu,
@@ -75,7 +72,8 @@ export default class NavExample extends React.Component {
                 Recipes
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem href='/recipes'>Search</DropdownItem>
+                <DropdownItem href='/recipes'>What's New?</DropdownItem>
+                <DropdownItem href='/search'>Search</DropdownItem>
               </DropdownMenu>
             </Dropdown>
 
