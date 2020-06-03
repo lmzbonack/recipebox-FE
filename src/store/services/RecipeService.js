@@ -119,4 +119,20 @@ export default {
       return 'No Token'
     }
   },
+  /**
+   * Searchs for input that a user provides
+   * @param {string} query the thing to be searched
+   */
+  async search(query) {
+    let token = await utils.retrieveAuthToken()
+    if (token) {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      return axios.get(`${process.env.REACT_APP_API_URL}/recipes/search?query=${query}`, config)
+    } else {
+      navigate('/login')
+      return 'No Token'
+    }
+  }
 }
