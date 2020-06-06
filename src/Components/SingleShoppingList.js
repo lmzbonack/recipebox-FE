@@ -194,29 +194,31 @@ export default class SingleShoppingList extends React.Component {
         { this.state.collapse &&
           <FormGroup>
             <InputGroup className='w-50 mb-2'>
-              <FormInput name='name' value={this.state.name} onChange={this.handleInputChange}/>
-              <Button className='ml-1' theme="secondary" onClick={ () => { this.updateName(this.state.name) } }>
+              <FormInput size='sm' name='name' value={this.state.name} onChange={this.handleInputChange}/>
+              <Button size='sm' className='ml-1' theme="secondary" onClick={ () => { this.updateName(this.state.name) } }>
                 <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
               </Button>
-              <Button id={`deleteButton-${this.props.id}`} className='ml-1' theme="danger" onClick={ () => { this.deleteShoppingList() } }>
+              <Button size='sm' id={`deleteButton-${this.props.id}`} className='ml-1' theme="danger" onClick={ () => { this.deleteShoppingList() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
               </Button>
             </InputGroup>
             <h6>Recipes</h6>
-            <ShoppingListRecipes addedRecipes={this.props.addedRecipes}
+            <ShoppingListRecipes id={this.props.id}
+                                 addedRecipes={this.props.addedRecipes}
                                  onRecipeDelete={this.handleRecipeDelete}
                                  relayToast={this.props.relayToast}/>
             <h6>Ingredients</h6>
             <InputGroup className='w-50'>
-              <FormInput placeholder= 'add ingredient' name='newIngredient' value={this.state.newIngredient} onChange={this.handleInputChange}/>
-              <Button className='ml-1' theme="success" onClick={ () => { this.addIngredient() } }>
+              <FormInput size='sm' placeholder= 'add ingredient' name='newIngredient' value={this.state.newIngredient} onChange={this.handleInputChange}/>
+              <Button  size='sm'className='ml-1' theme="success" onClick={ () => { this.addIngredient() } }>
                 <FontAwesomeIcon className='ml-1' icon={faPlus} />
               </Button>
             </InputGroup>
           </FormGroup>
         }
         <Collapse open={ this.state.collapse }>
-          <ShoppingListItems ingredients={this.props.ingredients}
+          <ShoppingListItems id={this.props.id}
+                             ingredients={this.props.ingredients}
                              onIngredientDelete={this.handleIngredientDelete}
                              onIngredientUpdate={this.handleIngredientUpdate}
                              closeModal={close => this.closeChildModal = close}/>
