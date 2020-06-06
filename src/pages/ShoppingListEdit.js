@@ -18,7 +18,7 @@ import ShoppingListService from '../store/services/ShoppingListService'
 import UserService from '../store/services/UserService'
 import SingleShoppingList from '../Components/SingleShoppingList'
 
-export default class ShoppingList extends React.Component {
+export default class ShoppingListEdit extends React.Component {
   constructor(props) {
     super(props)
     this.state = {

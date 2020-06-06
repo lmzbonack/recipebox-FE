@@ -55,7 +55,7 @@ export default class ShoppingListRecipes extends React.Component {
     })
     const result = await confirmService.show({
       title: 'Delete?',
-      target: `#deleteButton-${index}`
+      target: `#deleteButton-${index}-${this.props.id}`
     })
     if(result) {
       const payload = {
@@ -70,12 +70,12 @@ export default class ShoppingListRecipes extends React.Component {
   render() {
     return (
       <Container>
-        <ListGroup>
+        <ListGroup small flush>
           { this.state.recipes.map( (recipe, index) => (
             <ListGroupItem className="mt-1 mb-1" key={index}>
               { recipe.name }
               <ButtonGroup className='ml-2 float-right'>
-                <Button id= {`deleteButton-${index}`} theme='danger' className='ml-1' onClick={ () => { this.handleDelete(index, recipe.id, recipe.name) } }>
+                <Button size='sm' id= {`deleteButton-${index}-${this.props.id}`} theme='danger' className='ml-1' onClick={ () => { this.handleDelete(index, recipe.id, recipe.name) } }>
                   <FontAwesomeIcon className='ml-1' icon={faTimes} />
                 </Button>
               </ButtonGroup>

@@ -17,14 +17,15 @@ export default class NavExample extends React.Component {
   constructor(props) {
     super(props);
 
-    this.toggleRecipeDropdown = this.toggleRecipeDropdown.bind(this);
-    this.toggleProfileDropdown = this.toggleProfileDropdown.bind(this);
-
+    this.toggleRecipeDropdown = this.toggleRecipeDropdown.bind(this)
+    this.toggleProfileDropdown = this.toggleProfileDropdown.bind(this)
+    this.toggleShoppingListDropdown = this.toggleShoppingListDropdown.bind(this)
     this.toggleNavbar = this.toggleNavbar.bind(this);
 
     this.state = {
       recipeDropdownOpen: false,
       profileDropdownOpen: false,
+      shoppingListDropdownOpen: false,
       collapseOpen: false
     };
   }
@@ -43,6 +44,15 @@ export default class NavExample extends React.Component {
       ...this.state,
       ...{
         profileDropdownOpen: !this.state.profileDropdownOpen
+      }
+    });
+  }
+
+  toggleShoppingListDropdown() {
+    this.setState({
+      ...this.state,
+      ...{
+        shoppingListDropdownOpen: !this.state.shoppingListDropdownOpen
       }
     });
   }
@@ -74,9 +84,31 @@ export default class NavExample extends React.Component {
               <DropdownMenu>
                 <DropdownItem href='/recipes'>What's New?</DropdownItem>
                 <DropdownItem href='/search'>Search</DropdownItem>
+                {isloggedIn !== null &&
+                <span>
+                  <DropdownItem href='/created-recipes'>Created Recipes</DropdownItem>
+                  <DropdownItem href='/starred-recipes'>Starred Recipes</DropdownItem>
+                </span>
+                }
               </DropdownMenu>
             </Dropdown>
 
+            {isloggedIn !== null &&
+            <Dropdown
+              open={this.state.shoppingListDropdownOpen}
+              toggle={this.toggleShoppingListDropdown}
+            >
+              <DropdownToggle nav caret>
+                Shopping Lists
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem href='/shopping-list'>Manage</DropdownItem>
+                <DropdownItem href='/shopping-list-display'>View</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+            }
+
+            {isloggedIn !== null &&
             <Dropdown
               open={this.state.profileDropdownOpen}
               toggle={this.toggleProfileDropdown}
@@ -85,12 +117,10 @@ export default class NavExample extends React.Component {
                 Profile
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem href='/shopping-list'>Shopping Lists</DropdownItem>
-                <DropdownItem href='/created-recipes'>Created Recipes</DropdownItem>
-                <DropdownItem href='/starred-recipes'>Starred Recipes</DropdownItem>
                 <DropdownItem href='/created-manifests'>Scraping Manifests</DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            }
           </Nav>
 
           <Nav navbar className="ml-auto">

@@ -66,7 +66,7 @@ export default class ShoppingListItems extends React.Component {
     })
     const result = await confirmService.show({
       title: 'Delete?',
-      target: `#deleteButtonSingleItem-${index}`
+      target: `#deleteButtonSingleItem-${index}-${this.props.id}`
     })
     if(result) {
       const index = this.state.activeIndex
@@ -86,15 +86,15 @@ export default class ShoppingListItems extends React.Component {
     const { open } = this.state
     return (
       <Container>
-        <ListGroup>
+        <ListGroup flush small>
           { this.props.ingredients.map( (ingredient, index) => (
-            <ListGroupItem className="mt-1 mb-1" key={index}>
+            <ListGroupItem className="mb-1" key={index}>
               { ingredient }
               <ButtonGroup className='ml-2 float-right'>
-                <Button theme='secondary' onClick={ () => { this.openModal(index, ingredient) } }>
+                <Button  size='sm' theme='secondary' onClick={ () => { this.openModal(index, ingredient) } }>
                   <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
                 </Button>
-                <Button id={`deleteButtonSingleItem-${index}`} theme='danger' className='ml-1' onClick={ () => { this.handleDelete(index) } }>
+                <Button size='sm' id={`deleteButtonSingleItem-${index}-${this.props.id}`} theme='danger' className='ml-1' onClick={ () => { this.handleDelete(index) } }>
                   <FontAwesomeIcon className='ml-1' icon={faTimes} />
                 </Button>
               </ButtonGroup>

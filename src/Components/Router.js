@@ -7,7 +7,9 @@ import Recipes from '../pages/Recipes'
 import ScrapingManifests from '../pages/ScrapingManifests'
 import Search from '../pages/Search'
 import StarredRecipes from '../pages/StarredRecipes'
-import ShoppingList from '../pages/ShoppingList'
+import ShoppingListEdit from '../pages/ShoppingListEdit'
+import ShoppingListDisplay from '../pages/ShoppingListDisplay'
+import ShoppingListView from '../pages/ShoppingListView'
 import SignUp from '../pages/SignUp'
 
 
@@ -20,8 +22,10 @@ function ExportRouter(props){
       <Search path="/search"/>
       <CreatedRecipes path="/created-recipes"/>
       <StarredRecipes path="/starred-recipes"/>
-      <ShoppingList path='/shopping-list'/>
-      <ScrapingManifests path='created-manifests'/>
+      <ShoppingListEdit path="/shopping-list"/>
+      <ShoppingListDisplay path="/shopping-list-display"/>
+      <ShoppingListView path="/shopping-list/:shoppingListId"/>
+      <ScrapingManifests path="created-manifests"/>
       <Login path="/login"/>
       <SignUp path="/signup"/>
     </Router>
