@@ -71,11 +71,11 @@ class Confirm extends Component {
                target = { target || defaultProps.target }>
         <PopoverHeader>{ title || defaultProps.title }</PopoverHeader>
         <PopoverBody>
-          <ButtonGroup className='float-left'>
-            <Button className='w-20' theme='success' onClick={ this.handleConfirm }>
+          <ButtonGroup className='mb-3 float-left'>
+            <Button size='sm' className='w-20' theme='success' onClick={ this.handleConfirm }>
               <FontAwesomeIcon className='ml-1' icon={faCheck} />
             </Button>
-            <Button theme='danger' className='ml-1' onClick= { this.handleCancel }>
+            <Button size='sm' theme='danger' className='ml-1' onClick= { this.handleCancel }>
               <FontAwesomeIcon className='ml-1' icon={faTimes} />
             </Button>
           </ButtonGroup>

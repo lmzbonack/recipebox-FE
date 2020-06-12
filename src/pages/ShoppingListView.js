@@ -135,7 +135,7 @@ export default class ShoppingListView extends React.Component {
           <span>
             { (this.state.byShoppingList || []).map( (recipe, index) => (
               <span key={index}>
-              <p key={recipe}>{recipe.name}</p>
+              <h4 key={recipe}>{recipe.name}</h4>
               <ul>
                 { (recipe.ingredients || []).map( (ingredient, index) => (
                   <li key={index+'sub'}>{ingredient}</li>
@@ -145,7 +145,7 @@ export default class ShoppingListView extends React.Component {
             ))}
             { (this.state.byShoppingListExtras || []).map( (ing, index) => (
               <span>
-                <p>Extras</p>
+                <h4>Extras</h4>
                 <ul>
                   <li key={index}>{ing}</li>
                 </ul>

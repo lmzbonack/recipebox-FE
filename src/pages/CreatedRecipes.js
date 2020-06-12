@@ -202,10 +202,7 @@ export default class CreatedRecipes extends React.Component {
   render() {
     const { open, newOpen } = this.state
     return (
-      <Container className='mt-3 ag-theme-balham w-100'
-                 style={{
-                  "height": "90vh"
-                 }}>
+      <Container className='mt-3'>
         <Row className='mb-1'>
           <Col>
             <FormInput size="sm"
@@ -298,15 +295,20 @@ export default class CreatedRecipes extends React.Component {
           </ModalFooter>
         </Modal>
 
-        <AgGridReact
-          columnDefs={this.state.columnsDefs}
-          rowData={this.state.createdRecipes}
-          rowSelection='single'
-          onGridReady={this.onGridReady}
-          onRowDoubleClicked={this.editRecipe}
-          onFirstDataRendered={this.onFirstDataRendered.bind(this)}
-          frameworkComponents={this.state.frameworkComponents}
-        />
+        <div className='ag-theme-balham w-100'
+                 style={{
+                  "height": "80vh"
+                 }}>
+          <AgGridReact
+            columnDefs={this.state.columnsDefs}
+            rowData={this.state.createdRecipes}
+            rowSelection='single'
+            onGridReady={this.onGridReady}
+            onRowDoubleClicked={this.editRecipe}
+            onFirstDataRendered={this.onFirstDataRendered.bind(this)}
+            frameworkComponents={this.state.frameworkComponents}
+          />
+        </div>
         <ToastContainer/>
       </Container>
     )
