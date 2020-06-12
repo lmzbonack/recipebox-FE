@@ -156,10 +156,7 @@ export default class Recipes extends React.Component {
   render() {
     const { open } = this.state
     return (
-      <Container className='mt-3 ag-theme-balham w-100'
-                 style={{
-                  "height": "90vh"
-                 }}>
+      <Container className='mt-3'>
         <Row className='mb-1'>
           <Col>
             <FormInput size="sm"
@@ -210,15 +207,20 @@ export default class Recipes extends React.Component {
                           relayToast={this.displayToastNotification}/>
           </ModalFooter>
         </Modal>
-        <AgGridReact
-          columnDefs={this.state.columnsDefs}
-          rowData={this.state.recipes}
-          rowSelection='single'
-          onGridReady={this.onGridReady}
-          onRowDoubleClicked={this.viewRecipeDetails}
-          onFirstDataRendered={this.onFirstDataRendered.bind(this)}
-          frameworkComponents={this.state.frameworkComponents}
-        />
+        <div className='ag-theme-balham w-100'
+                 style={{
+                  "height": "80vh"
+                 }}>
+          <AgGridReact
+            columnDefs={this.state.columnsDefs}
+            rowData={this.state.recipes}
+            rowSelection='single'
+            onGridReady={this.onGridReady}
+            onRowDoubleClicked={this.viewRecipeDetails}
+            onFirstDataRendered={this.onFirstDataRendered.bind(this)}
+            frameworkComponents={this.state.frameworkComponents}
+          />
+        </div>
         <ToastContainer/>
       </Container>
     )
