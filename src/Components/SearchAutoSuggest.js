@@ -193,7 +193,7 @@ export default class SearchAutoSuggest extends React.Component {
                 <Button theme='info' className='ml-1' onClick={ () => { this.togglePopoverChild() } }>
                   <FontAwesomeIcon className='ml-1' icon={faListAlt} />
                 </Button>
-                <Button theme='secondary' className='ml-1' onClick={ () => this.starRecipeChild() }>
+                <Button theme='primary' className='ml-1' onClick={ () => this.starRecipeChild() }>
                   <FontAwesomeIcon className='ml-1' icon={faStar} />
                 </Button>
               </ButtonGroup>

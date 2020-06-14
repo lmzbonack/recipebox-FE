@@ -7,8 +7,10 @@ import {
   InputGroup,
   FormInput,
   FormGroup } from 'shards-react'
-import { faArrowDown, faArrowUp, faTimes, faPencilAlt, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDown, faArrowUp, faArrowRight, faTimes, faPencilAlt, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { navigate } from "@reach/router"
 
 import confirmService from '../Components/confirmService'
 import ShoppingListItems from './ShoppingListItems'
@@ -33,6 +35,7 @@ export default class SingleShoppingList extends React.Component {
     this.updateName = this.updateName.bind(this)
     this.deleteShoppingList = this.deleteShoppingList.bind(this)
     this.addIngredient = this.addIngredient.bind(this)
+    this.navigateToDisplay = this.navigateToDisplay.bind(this)
   }
 
   componentDidMount() {
@@ -54,6 +57,10 @@ export default class SingleShoppingList extends React.Component {
     this.setState({
       [name]: value
     });
+  }
+
+  navigateToDisplay(listId) {
+    navigate(`/shopping-list/${listId}`)
   }
 
   async addIngredient() {
@@ -195,11 +202,14 @@ export default class SingleShoppingList extends React.Component {
           <FormGroup>
             <InputGroup className='w-50 mb-2'>
               <FormInput size='sm' name='name' value={this.state.name} onChange={this.handleInputChange}/>
-              <Button size='sm' className='ml-1' theme="secondary" onClick={ () => { this.updateName(this.state.name) } }>
-                <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
-              </Button>
               <Button size='sm' id={`deleteButton-${this.props.id}`} className='ml-1' theme="danger" onClick={ () => { this.deleteShoppingList() } }>
-                <FontAwesomeIcon className='ml-1' icon={faTimes} />
+                <FontAwesomeIcon className='ml-1' icon={faTrash} />
+              </Button>
+              <Button size='sm' className='ml-1' theme="info" onClick={ () => { this.navigateToDisplay(this.props.id) } }>
+                <FontAwesomeIcon className='ml-1' icon={faArrowRight} />
+              </Button>
+              <Button size='sm' className='ml-1' theme="primary" onClick={ () => { this.updateName(this.state.name) } }>
+                <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
               </Button>
             </InputGroup>
             <h6>Recipes</h6>
@@ -210,7 +220,7 @@ export default class SingleShoppingList extends React.Component {
             <h6>Ingredients</h6>
             <InputGroup className='w-50'>
               <FormInput size='sm' placeholder= 'add ingredient' name='newIngredient' value={this.state.newIngredient} onChange={this.handleInputChange}/>
-              <Button  size='sm'className='ml-1' theme="success" onClick={ () => { this.addIngredient() } }>
+              <Button  size='sm'className='ml-1' theme="primary" onClick={ () => { this.addIngredient() } }>
                 <FontAwesomeIcon className='ml-1' icon={faPlus} />
               </Button>
             </InputGroup>

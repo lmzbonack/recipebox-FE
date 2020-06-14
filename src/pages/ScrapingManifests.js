@@ -229,7 +229,7 @@ export default class ScrapingManifests extends React.Component {
               <Button theme='warning' className='ml-1' onClick={ () => { this.toggleEditModal() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
               </Button>
-              <Button theme='secondary' className='ml-1' onClick={ () => { this.editSmanifestChild() } }>
+              <Button theme='primary' className='ml-1' onClick={ () => { this.editSmanifestChild() } }>
                 <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
               </Button>
             </ButtonGroup>

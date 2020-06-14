@@ -238,14 +238,14 @@ export default class CreatedRecipes extends React.Component {
           </ModalBody>
           <ModalFooter>
             <ButtonGroup className='float-left'>
-              <Button theme='danger' className='ml-1' onClick={ () => { this.toggleNewModal() } }>
+              <Button theme='warning' className='ml-1' onClick={ () => { this.toggleNewModal() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
               </Button>
               <Button theme='info' className='ml-1' onClick={ () => { this.scrapeRecipeChild() } }>
                 Scrape
                 <FontAwesomeIcon className='ml-1' icon={faCaravan} />
               </Button>
-              <Button theme='secondary' className='ml-1' onClick={ () => this.createRecipeChild() }>
+              <Button theme='primary' className='ml-1' onClick={ () => this.createRecipeChild() }>
                 <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
               </Button>
             </ButtonGroup>
@@ -279,13 +279,13 @@ export default class CreatedRecipes extends React.Component {
               <Button theme='warning' className='ml-1' onClick={ () => { this.toggleModal() } }>
                 <FontAwesomeIcon className='ml-1' icon={faTimes} />
               </Button>
-              <Button theme='info' className='ml-1' onClick={ () => this.starRecipeChild() }>
+              <Button theme='secondary' className='ml-1' onClick={ () => this.starRecipeChild() }>
                   <FontAwesomeIcon className='ml-1' icon={faStar} />
                 </Button>
               <Button theme='info' className='ml-1' onClick={ () => { this.togglePopoverChild() } }>
                   <FontAwesomeIcon className='ml-1' icon={faListAlt} />
               </Button>
-              <Button theme='secondary' className='ml-1' onClick={ () => this.recipeEditChild() }>
+              <Button theme='primary' className='ml-1' onClick={ () => this.recipeEditChild() }>
                 <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
               </Button>
             </ButtonGroup>
