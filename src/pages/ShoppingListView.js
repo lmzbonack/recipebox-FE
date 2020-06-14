@@ -1,6 +1,8 @@
 import React from 'react'
 
-import { Button,
+import { Breadcrumb,
+         BreadcrumbItem,
+         Button,
          ButtonToolbar,
          ButtonGroup,
          Container } from 'shards-react'
@@ -98,7 +100,7 @@ export default class ShoppingListView extends React.Component {
     let { displayMode } = this.state
     return (
       <Container>
-        <h3>{this.state.name}</h3>
+        <h3 className='mt-2'>{this.state.name}</h3>
         <ButtonToolbar className='mt-2 mb-2'>
           <ButtonGroup size="sm">
             {displayMode==='default'

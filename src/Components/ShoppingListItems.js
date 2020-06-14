@@ -12,7 +12,7 @@ import { Button,
          ListGroupItem,
          Container } from "shards-react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes, faPencilAlt } from "@fortawesome/free-solid-svg-icons"
+import { faTimes, faPencilAlt, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 import confirmService from '../Components/confirmService'
 
@@ -91,11 +91,11 @@ export default class ShoppingListItems extends React.Component {
             <ListGroupItem className="mb-1" key={index}>
               { ingredient }
               <ButtonGroup className='ml-2 float-right'>
-                <Button  size='sm' theme='secondary' onClick={ () => { this.openModal(index, ingredient) } }>
+                <Button size='sm' theme='primary' onClick={ () => { this.openModal(index, ingredient) } }>
                   <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
                 </Button>
                 <Button size='sm' id={`deleteButtonSingleItem-${index}-${this.props.id}`} theme='danger' className='ml-1' onClick={ () => { this.handleDelete(index) } }>
-                  <FontAwesomeIcon className='ml-1' icon={faTimes} />
+                  <FontAwesomeIcon className='ml-1' icon={faTrash} />
                 </Button>
               </ButtonGroup>
             </ListGroupItem>
@@ -110,7 +110,7 @@ export default class ShoppingListItems extends React.Component {
                 <FormInput name="activeValue"  value={this.state.activeValue} onChange={this.handleInputChange}/>
               </FormGroup>
               <ButtonGroup className='float-right'>
-                <Button className='w-20' theme='secondary' onClick={ () => { this.handleUpdate() } }>
+                <Button className='w-20' theme='primary' onClick={ () => { this.handleUpdate() } }>
                   <FontAwesomeIcon className='ml-1' icon={faPencilAlt} />
                 </Button>
                 <Button theme='danger' className='ml-1' onClick={ () => { this.toggleModal() } }>
