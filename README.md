@@ -1,3 +1,5 @@
+This repository has been migrated [here](https://github.com/lmzbonack/recipebox-API) to make deploying it easier
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
